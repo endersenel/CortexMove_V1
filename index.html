@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>NeuroSync - Sağ & Sol Beyin Egzersizi</title>
+  <title>CortexMove - SPPlab</title>
   <style>
     :root {
       --bg-color: #0f172a;
@@ -12,7 +12,6 @@
       --accent-color: #38bdf8;
       --danger-color: #ef4444;
       --success-color: #22c55e;
-      --warning-color: #eab308;
     }
 
     * {
@@ -34,7 +33,7 @@
       overflow: hidden;
     }
 
-    /* Header & Control Panel */
+    /* Header */
     header {
       background-color: var(--card-bg);
       padding: 12px 20px;
@@ -45,12 +44,16 @@
       z-index: 10;
     }
 
-    h1 {
+    .brand-title {
       font-size: 1.4rem;
+      font-weight: bold;
       color: var(--accent-color);
-      display: flex;
-      align-items: center;
-      gap: 8px;
+    }
+
+    .brand-subtitle {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      font-weight: 600;
     }
 
     .controls {
@@ -60,15 +63,14 @@
       flex-wrap: wrap;
     }
 
-    select, button {
-      padding: 8px 14px;
+    select, button, label {
+      padding: 8px 12px;
       border-radius: 8px;
       border: 1px solid #334155;
       background-color: #0f172a;
       color: #fff;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       cursor: pointer;
-      transition: all 0.2s;
     }
 
     button.btn-primary {
@@ -78,8 +80,15 @@
       border: none;
     }
 
-    button.btn-primary:hover {
-      background-color: #7dd3fc;
+    .toggle-container {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #0f172a;
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid #334155;
+      font-size: 0.85rem;
     }
 
     /* Info Bar */
@@ -88,7 +97,7 @@
       padding: 8px 20px;
       display: flex;
       justify-content: space-around;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       border-bottom: 1px solid #334155;
     }
 
@@ -97,7 +106,7 @@
       color: var(--accent-color);
     }
 
-    /* Main Display Area */
+    /* Main Area */
     main {
       flex: 1;
       display: flex;
@@ -107,11 +116,9 @@
     .side-panel {
       flex: 1;
       display: flex;
-      flex-direction: column;
       justify-content: center;
       align-items: center;
       padding: 20px;
-      transition: background-color 0.3s;
       position: relative;
     }
 
@@ -119,35 +126,38 @@
       border-right: 2px dashed #334155;
     }
 
-    .hand-card {
+    /* Original Display Card Style */
+    .card-display {
       background-color: var(--card-bg);
       border-radius: 20px;
       padding: 30px;
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: center;
       gap: 15px;
       box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
       border: 2px solid #334155;
       width: 80%;
+      height: 70%;
       max-width: 320px;
       text-align: center;
+      position: relative;
     }
 
-    .hand-icon {
-      font-size: 6rem;
+    .card-icon {
+      font-size: 5.5rem;
       line-height: 1;
-      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
     }
 
-    .hand-label {
+    .card-label {
       font-size: 1.2rem;
       font-weight: 600;
       color: #94a3b8;
     }
 
-    /* Dual-Task Display Center */
-    .dual-task-overlay {
+    /* Center Dual-Task Math Overlay */
+    .math-overlay {
       position: absolute;
       top: 50%;
       left: 50%;
@@ -155,9 +165,9 @@
       background-color: var(--card-bg);
       border: 2px solid var(--accent-color);
       border-radius: 50%;
-      width: 110px;
-      height: 110px;
-      display: flex;
+      width: 100px;
+      height: 100px;
+      display: none;
       flex-direction: column;
       justify-content: center;
       align-items: center;
@@ -165,134 +175,45 @@
       z-index: 5;
     }
 
-    .dual-task-overlay .title {
-      font-size: 0.65rem;
+    .math-overlay .title {
+      font-size: 0.6rem;
       color: #94a3b8;
-      text-transform: uppercase;
     }
 
-    .dual-task-overlay .content {
-      font-size: 1.3rem;
+    .math-overlay .content {
+      font-size: 1.2rem;
       font-weight: bold;
       color: #fff;
     }
 
-    /* Touch Module Elements */
-    .touch-target-container {
+    /* Touch Module Inside Card */
+    .touch-grid {
       display: flex;
-      gap: 20px;
+      gap: 15px;
+      flex-wrap: wrap;
       justify-content: center;
       align-items: center;
-      flex-wrap: wrap;
       width: 100%;
       height: 100%;
     }
 
-    .touch-circle {
-      width: 90px;
-      height: 90px;
+    .touch-dot {
+      width: 75px;
+      height: 75px;
       border-radius: 50%;
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: 1.5rem;
-      font-weight: bold;
-      color: white;
-      box-shadow: 0 6px 12px rgba(0,0,0,0.4);
-      cursor: pointer;
-      transition: transform 0.1s;
-    }
-
-    .touch-circle:active, .touch-circle.active {
-      transform: scale(0.9);
-      box-shadow: 0 2px 4px rgba(0,0,0,0.4);
-    }
-
-    /* Footer & Trainer Controls */
-    footer {
-      background-color: var(--card-bg);
-      padding: 12px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-top: 1px solid #334155;
-    }
-
-    .trainer-buttons {
-      display: flex;
-      gap: 12px;
-    }
-
-    .btn-success {
-      background-color: var(--success-color);
-      color: white;
-      font-weight: bold;
-      border: none;
-      padding: 10px 20px;
-    }
-
-    .btn-danger {
-      background-color: var(--danger-color);
-      color: white;
-      font-weight: bold;
-      border: none;
-      padding: 10px 20px;
-    }
-
-    /* Modal / Results Report */
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.85);
-      backdrop-filter: blur(5px);
-      z-index: 100;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .modal-content {
-      background: var(--card-bg);
-      padding: 30px;
-      border-radius: 16px;
-      max-width: 500px;
-      width: 90%;
-      border: 1px solid #334155;
-      text-align: center;
-    }
-
-    .modal-content h2 {
-      color: var(--accent-color);
-      margin-bottom: 15px;
-    }
-
-    .report-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 15px;
-      margin: 20px 0;
-      text-align: left;
-    }
-
-    .report-card {
-      background: #0f172a;
-      padding: 12px;
-      border-radius: 8px;
-    }
-
-    .report-card label {
-      font-size: 0.8rem;
-      color: #94a3b8;
-      display: block;
-    }
-
-    .report-card value {
       font-size: 1.2rem;
       font-weight: bold;
-      color: #fff;
+      color: white;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+      cursor: pointer;
+    }
+
+    .touch-dot.active {
+      transform: scale(0.9);
+      opacity: 0.3;
     }
 
     /* Instruction Box */
@@ -310,31 +231,55 @@
       z-index: 4;
       pointer-events: none;
     }
+
+    /* Footer */
+    footer {
+      background-color: var(--card-bg);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid #334155;
+      font-size: 0.8rem;
+      color: #94a3b8;
+    }
+
+    .trainer-btn {
+      padding: 8px 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+    }
+    .btn-correct { background-color: var(--success-color); color: #fff; }
+    .btn-wrong { background-color: var(--danger-color); color: #fff; }
   </style>
 </head>
 <body>
 
-  <!-- Header Section -->
+  <!-- Header -->
   <header>
-    <h1>🧠 NeuroSync</h1>
+    <div>
+      <div class="brand-title">🧠 CortexMove</div>
+      <div class="brand-subtitle">Sporda Performans Psikolojisi Lab (SPPlab)</div>
+    </div>
+    
     <div class="controls">
       <select id="moduleSelect">
         <option value="hand">1. El Hareketleri Modülü</option>
-        <option value="touch">2. Dokunmatik Renk & Hedef Modülü</option>
-      </select>
-      
-      <select id="modeSelect">
-        <option value="standard">Normal Mod</option>
-        <option value="inverse">Çapraz / Zıt Mod</option>
-        <option value="stroop">Stroop (Renk Kurallı)</option>
+        <option value="touch">2. Dokunmatik Renk Modülü</option>
       </select>
 
       <select id="difficultySelect">
-        <option value="easy">Kolay (2 Hareket)</option>
-        <option value="medium" selected>Orta (4 Hareket)</option>
-        <option value="hard">Zor (6 Hareket)</option>
-        <option value="expert">Çok Zor (8 Hareket)</option>
+        <option value="easy">Kolay (3 sn)</option>
+        <option value="medium" selected>Orta (2 sn)</option>
+        <option value="hard">Zor (1.2 sn)</option>
+        <option value="expert">Çok Zor (0.8 sn)</option>
       </select>
+
+      <div class="toggle-container">
+        <input type="checkbox" id="mathToggle">
+        <label for="mathToggle" style="padding:0; border:none; background:none;">Matematik Görevi</label>
+      </div>
 
       <button id="startBtn" class="btn-primary">Başlat</button>
     </div>
@@ -343,133 +288,71 @@
   <!-- Info Bar -->
   <div class="info-bar">
     <div class="info-item">Süre: <span id="timerDisplay">00:00</span></div>
-    <div class="info-item">Adım: <span id="stepDisplay">0 / 10</span></div>
-    <div class="info-item">Son Tepki: <span id="reactionDisplay">0 ms</span></div>
-    <div class="info-item">Ort. Tepki: <span id="avgReactionDisplay">0 ms</span></div>
+    <div class="info-item">Aşama: <span id="stepDisplay">0 / 15</span></div>
+    <div class="info-item">Tepki: <span id="reactionDisplay">0 ms</span></div>
   </div>
 
-  <!-- Main Display Area -->
+  <!-- Main Area -->
   <main>
     <div class="instruction-banner" id="instructionBanner">Egzersizi başlatmak için 'Başlat' butonuna basın.</div>
     
-    <!-- Left Hand / Area -->
-    <div class="side-panel left" id="leftPanel">
-      <div class="hand-card" id="leftHandCard">
-        <div class="hand-icon" id="leftIcon">👈</div>
-        <div class="hand-label" id="leftLabel">SOL EL</div>
+    <!-- Left Display Panel -->
+    <div class="side-panel left">
+      <div class="card-display" id="leftCard">
+        <div class="card-icon" id="leftIcon">✊</div>
+        <div class="card-label" id="leftLabel">SOL EL</div>
+        <div class="touch-grid" id="leftTouchGrid" style="display:none;"></div>
       </div>
-      <div class="touch-target-container" id="leftTouchContainer" style="display: none;"></div>
     </div>
 
-    <!-- Dual Task Center Display -->
-    <div class="dual-task-overlay" id="dualTaskOverlay" style="display: none;">
-      <div class="title">BİLİŞSEL</div>
-      <div class="content" id="dualTaskContent">-</div>
+    <!-- Center Math Overlay -->
+    <div class="math-overlay" id="mathOverlay">
+      <div class="title">MATEMATİK</div>
+      <div class="content" id="mathContent">3 + 4</div>
     </div>
 
-    <!-- Right Hand / Area -->
-    <div class="side-panel right" id="rightPanel">
-      <div class="hand-card" id="rightHandCard">
-        <div class="hand-icon" id="rightIcon">👉</div>
-        <div class="hand-label" id="rightLabel">SAĞ EL</div>
+    <!-- Right Display Panel -->
+    <div class="side-panel right">
+      <div class="card-display" id="rightCard">
+        <div class="card-icon" id="rightIcon">🖐️</div>
+        <div class="card-label" id="rightLabel">SAĞ EL</div>
+        <div class="touch-grid" id="rightTouchGrid" style="display:none;"></div>
       </div>
-      <div class="touch-target-container" id="rightTouchContainer" style="display: none;"></div>
     </div>
   </main>
 
-  <!-- Footer Controls for Trainer -->
+  <!-- Footer -->
   <footer>
-    <div style="font-size: 0.85rem; color: #94a3b8;">
-      Kısayollar: [Boşluk] Sonraki | [A] Doğru (🟢) | [Z] Hatalı (🔴)
-    </div>
-    <div class="trainer-buttons">
-      <button class="btn-danger" id="wrongBtn">🔴 Hatalı (Z)</button>
-      <button class="btn-success" id="correctBtn">🟢 Doğru (A)</button>
-      <button id="nextBtn">Sonraki ➔</button>
+    <div>SPPlab - CortexMove | Otomatik Geçiş Sistemi Active</div>
+    <div style="display:flex; gap:10px;">
+      <button class="trainer-btn btn-wrong" id="wrongBtn">🔴 Hatalı (Z)</button>
+      <button class="trainer-btn btn-correct" id="correctBtn">🟢 Doğru (A)</button>
     </div>
   </footer>
 
-  <!-- Results Modal -->
-  <div class="modal" id="resultsModal">
-    <div class="modal-content">
-      <h2>🎉 Seans Tamamlandı</h2>
-      <p style="color: #94a3b8;">Performans Analiz Raporu</p>
-      
-      <div class="report-grid">
-        <div class="report-card">
-          <label>Toplam Adım</label>
-          <value id="reportSteps">10</value>
-        </div>
-        <div class="report-card">
-          <label>Doğruluk Oranı</label>
-          <value id="reportAccuracy">%100</value>
-        </div>
-        <div class="report-card">
-          <label>Ort. Tepki Süresi</label>
-          <value id="reportAvgTime">0 ms</value>
-        </div>
-        <div class="report-card">
-          <label>En Hızlı Tepki</label>
-          <value id="reportBestTime">0 ms</value>
-        </div>
-      </div>
-
-      <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
-        <button id="closeModalBtn" class="btn-primary">Tamam</button>
-        <button id="downloadReportBtn">Raporu İndir (CSV)</button>
-      </div>
-    </div>
-  </div>
-
   <script>
-    // System State
+    // State Variables
     let isRunning = false;
     let currentStep = 0;
-    const maxSteps = 10;
+    const maxSteps = 15;
     let timerInterval = null;
+    let autoStepTimeout = null;
     let startTime = 0;
     let stepStartTime = 0;
-    let reactionTimes = [];
-    let correctCount = 0;
-    let wrongCount = 0;
     
-    // Multi-touch target tracking
     let requiredTouches = 0;
     let currentTouches = 0;
 
-    // Movement Hand Libraries
-    const handMovements = {
-      easy: [
-        { icon: '✊', name: 'Yumruk' },
-        { icon: '🖐️', name: 'Açık El' }
-      ],
-      medium: [
-        { icon: '✊', name: 'Yumruk' },
-        { icon: '🖐️', name: 'Açık El' },
-        { icon: '✌️', name: 'Zafer' },
-        { icon: '👍', name: 'Başparmak' }
-      ],
-      hard: [
-        { icon: '✊', name: 'Yumruk' },
-        { icon: '🖐️', name: 'Açık El' },
-        { icon: '✌️', name: 'Zafer' },
-        { icon: '👍', name: 'Başparmak' },
-        { icon: '🤏', name: 'Çimdik' },
-        { icon: '🤟', name: 'Rock' }
-      ],
-      expert: [
-        { icon: '✊', name: 'Yumruk' },
-        { icon: '🖐️', name: 'Açık El' },
-        { icon: '✌️', name: 'Zafer' },
-        { icon: '👍', name: 'Başparmak' },
-        { icon: '🤏', name: 'Çimdik' },
-        { icon: '🤟', name: 'Rock' },
-        { icon: '👈', name: 'Sol İşaret' },
-        { icon: '👉', name: 'Sağ İşaret' }
-      ]
-    };
+    // Movement Sets
+    const movements = [
+      { icon: '✊', name: 'Yumruk' },
+      { icon: '🖐️', name: 'Açık El' },
+      { icon: '✌️', name: 'Zafer' },
+      { icon: '👍', name: 'Başparmak' },
+      { icon: '🤏', name: 'Çimdik' },
+      { icon: '🤟', name: 'Rock' }
+    ];
 
-    // Colors for Touch Module
     const colors = [
       { name: 'Mavi', hex: '#3b82f6' },
       { name: 'Kırmızı', hex: '#ef4444' },
@@ -477,78 +360,61 @@
       { name: 'Sarı', hex: '#eab308' }
     ];
 
+    // Difficulty Speeds (ms)
+    const speeds = {
+      easy: 3000,
+      medium: 2000,
+      hard: 1200,
+      expert: 800
+    };
+
     // DOM Elements
     const startBtn = document.getElementById('startBtn');
     const moduleSelect = document.getElementById('moduleSelect');
-    const modeSelect = document.getElementById('modeSelect');
     const difficultySelect = document.getElementById('difficultySelect');
+    const mathToggle = document.getElementById('mathToggle');
+    
     const timerDisplay = document.getElementById('timerDisplay');
     const stepDisplay = document.getElementById('stepDisplay');
     const reactionDisplay = document.getElementById('reactionDisplay');
-    const avgReactionDisplay = document.getElementById('avgReactionDisplay');
-    
-    const leftHandCard = document.getElementById('leftHandCard');
-    const rightHandCard = document.getElementById('rightHandCard');
-    const leftTouchContainer = document.getElementById('leftTouchContainer');
-    const rightTouchContainer = document.getElementById('rightTouchContainer');
+    const instructionBanner = document.getElementById('instructionBanner');
     
     const leftIcon = document.getElementById('leftIcon');
-    const rightIcon = document.getElementById('rightIcon');
     const leftLabel = document.getElementById('leftLabel');
+    const rightIcon = document.getElementById('rightIcon');
     const rightLabel = document.getElementById('rightLabel');
     
-    const dualTaskOverlay = document.getElementById('dualTaskOverlay');
-    const dualTaskContent = document.getElementById('dualTaskContent');
-    const instructionBanner = document.getElementById('instructionBanner');
+    const leftTouchGrid = document.getElementById('leftTouchGrid');
+    const rightTouchGrid = document.getElementById('rightTouchGrid');
+    const mathOverlay = document.getElementById('mathOverlay');
+    const mathContent = document.getElementById('mathContent');
 
-    const correctBtn = document.getElementById('correctBtn');
-    const wrongBtn = document.getElementById('wrongBtn');
-    const nextBtn = document.getElementById('nextBtn');
-    
-    const resultsModal = document.getElementById('resultsModal');
-    const closeModalBtn = document.getElementById('closeModalBtn');
-
-    // Event Listeners
+    // Controls
     startBtn.addEventListener('click', toggleGame);
-    nextBtn.addEventListener('click', nextStep);
-    correctBtn.addEventListener('click', () => recordResult(true));
-    wrongBtn.addEventListener('click', () => recordResult(false));
-    closeModalBtn.addEventListener('click', () => resultsModal.style.display = 'none');
-
-    // Keyboard Shortcuts
-    document.addEventListener('keydown', (e) => {
-      if (!isRunning) return;
-      if (e.code === 'Space') nextStep();
-      if (e.key === 'a' || e.key === 'A') recordResult(true);
-      if (e.key === 'z' || e.key === 'Z') recordResult(false);
-    });
+    document.getElementById('correctBtn').addEventListener('click', () => recordScore(true));
+    document.getElementById('wrongBtn').addEventListener('click', () => recordScore(false));
 
     function toggleGame() {
-      if (isRunning) {
-        stopGame();
-      } else {
-        startGame();
-      }
+      if (isRunning) stopGame();
+      else startGame();
     }
 
     function startGame() {
       isRunning = true;
       currentStep = 0;
-      reactionTimes = [];
-      correctCount = 0;
-      wrongCount = 0;
       startBtn.textContent = 'Durdur';
       startBtn.style.backgroundColor = 'var(--danger-color)';
       
       startTime = Date.now();
       timerInterval = setInterval(updateTimer, 1000);
       
-      nextStep();
+      autoNextStep();
     }
 
     function stopGame() {
       isRunning = false;
       clearInterval(timerInterval);
+      clearTimeout(autoStepTimeout);
       startBtn.textContent = 'Başlat';
       startBtn.style.backgroundColor = 'var(--accent-color)';
       instructionBanner.textContent = "Egzersiz durduruldu.";
@@ -561,21 +427,13 @@
       timerDisplay.textContent = `${mins}:${secs}`;
     }
 
-    function nextStep() {
+    function autoNextStep() {
       if (!isRunning) return;
-
-      // Record reaction time if coming from previous step
-      if (stepStartTime > 0) {
-        const reaction = Date.now() - stepStartTime;
-        reactionTimes.push(reaction);
-        reactionDisplay.textContent = `${reaction} ms`;
-        const avg = Math.round(reactionTimes.reduce((a, b) => a + b, 0) / reactionTimes.length);
-        avgReactionDisplay.textContent = `${avg} ms`;
-      }
 
       currentStep++;
       if (currentStep > maxSteps) {
-        finishSession();
+        alert("🎉 Seans Tamamlandı!");
+        stopGame();
         return;
       }
 
@@ -583,145 +441,112 @@
       stepStartTime = Date.now();
 
       const activeModule = moduleSelect.value;
-      const activeMode = modeSelect.value;
-      const activeDifficulty = difficultySelect.value;
+      const speed = speeds[difficultySelect.value];
 
-      // Reset panels
-      leftHandCard.style.display = 'none';
-      rightHandCard.style.display = 'none';
-      leftTouchContainer.style.display = 'none';
-      rightTouchContainer.style.display = 'none';
-      dualTaskOverlay.style.display = 'none';
-
-      // Update instructions based on mode
-      if (activeMode === 'inverse') {
-        instructionBanner.textContent = '⚡ ÇAPRAZ MOD: Ekranda görülenin ZIDDINI uygulayın!';
-      } else if (activeMode === 'stroop') {
-        instructionBanner.textContent = '🎨 STROOP MODU: Renk kuralına dikkat edin!';
-      } else {
-        instructionBanner.textContent = '🎯 STANDART MOD: Ekranda görülen hareketleri birebir yapın.';
-      }
-
-      // Dual Task Random Math Generation
-      if (Math.random() > 0.5) {
-        dualTaskOverlay.style.display = 'flex';
+      // Math Task Overlay Toggle
+      if (mathToggle.checked && Math.random() > 0.4) {
+        mathOverlay.style.display = 'flex';
         const num1 = Math.floor(Math.random() * 9) + 1;
         const num2 = Math.floor(Math.random() * 9) + 1;
-        dualTaskContent.textContent = `${num1} + ${num2}`;
-      }
-
-      // Render Active Module
-      if (activeModule === 'hand') {
-        renderHandModule(activeDifficulty);
+        mathContent.textContent = `${num1} + ${num2}`;
       } else {
-        renderTouchModule(activeDifficulty);
+        mathOverlay.style.display = 'none';
       }
+
+      // Render Module
+      if (activeModule === 'hand') {
+        renderHandModule();
+      } else {
+        renderTouchModule();
+      }
+
+      // Set timeout for automatic next step (Random/Rastgele Otomatik Akış)
+      autoStepTimeout = setTimeout(() => {
+        autoNextStep();
+      }, speed);
     }
 
-    // 1. Hand Exercise Module
-    function renderHandModule(difficulty) {
-      leftHandCard.style.display = 'flex';
-      rightHandCard.style.display = 'flex';
+    function renderHandModule() {
+      leftIcon.style.display = 'block';
+      leftLabel.style.display = 'block';
+      rightIcon.style.display = 'block';
+      rightLabel.style.display = 'block';
+      leftTouchGrid.style.display = 'none';
+      rightTouchGrid.style.display = 'none';
 
-      const pool = handMovements[difficulty];
-      const leftMove = pool[Math.floor(Math.random() * pool.length)];
-      const rightMove = pool[Math.floor(Math.random() * pool.length)];
+      instructionBanner.textContent = '🖐️ Şekillere göre hareketi ellerinizle yapın!';
 
-      leftIcon.textContent = leftMove.icon;
-      leftLabel.textContent = leftMove.name;
-      rightIcon.textContent = rightMove.icon;
-      rightLabel.textContent = rightMove.name;
+      const left = movements[Math.floor(Math.random() * movements.length)];
+      const right = movements[Math.floor(Math.random() * movements.length)];
+
+      leftIcon.textContent = left.icon;
+      leftLabel.textContent = left.name;
+      rightIcon.textContent = right.icon;
+      rightLabel.textContent = right.name;
     }
 
-    // 2. Touch Color Target Module
-    function renderTouchModule(difficulty) {
-      leftTouchContainer.style.display = 'flex';
-      rightTouchContainer.style.display = 'flex';
-      
-      leftTouchContainer.innerHTML = '';
-      rightTouchContainer.innerHTML = '';
+    function renderTouchModule() {
+      leftIcon.style.display = 'none';
+      leftLabel.style.display = 'none';
+      rightIcon.style.display = 'none';
+      rightLabel.style.display = 'none';
+      leftTouchGrid.style.display = 'flex';
+      rightTouchGrid.style.display = 'flex';
 
-      // Determine circle counts based on difficulty
-      let countLeft = 1;
-      let countRight = 1;
-      if (difficulty === 'medium') { countLeft = 1; countRight = 2; }
-      if (difficulty === 'hard') { countLeft = 2; countRight = 2; }
-      if (difficulty === 'expert') { countLeft = 2; countRight = 3; }
+      leftTouchGrid.innerHTML = '';
+      rightTouchGrid.innerHTML = '';
 
-      // Target selection vs Penalty Color
       const targetColor = colors[Math.floor(Math.random() * colors.length)];
       const forbiddenColor = colors.find(c => c.hex !== targetColor.hex);
 
-      instructionBanner.textContent = `👉 HEDEF: ${targetColor.name} dairelere basın! (${forbiddenColor.name} renge DOKUNMAYIN!)`;
+      instructionBanner.textContent = `👉 HEDEF: ${targetColor.name} dairelere basın! (${forbiddenColor.name} renge dokunmayın!)`;
 
-      requiredTouches = countLeft + countRight;
+      requiredTouches = 2;
       currentTouches = 0;
 
-      // Render Left Container Circles
-      for (let i = 0; i < countLeft; i++) {
-        createTouchCircle(leftTouchContainer, targetColor);
-      }
+      // Add Target Dot to Left & Right
+      createDot(leftTouchGrid, targetColor);
+      createDot(rightTouchGrid, targetColor);
 
-      // Render Right Container Circles
-      for (let i = 0; i < countRight; i++) {
-        createTouchCircle(rightTouchContainer, targetColor);
-      }
-
-      // Add a decoy/forbidden color circle
-      if (difficulty === 'hard' || difficulty === 'expert') {
-        createTouchCircle(leftTouchContainer, forbiddenColor, true);
+      // Add Decoy/Forbidden Dot randomly
+      if (Math.random() > 0.5) {
+        createDot(leftTouchGrid, forbiddenColor, true);
       }
     }
 
-    function createTouchCircle(container, colorObj, isForbidden = false) {
-      const circle = document.createElement('div');
-      circle.className = 'touch-circle';
-      circle.style.backgroundColor = colorObj.hex;
-      circle.textContent = isForbidden ? '❌' : '🎯';
+    function createDot(container, colorObj, isForbidden = false) {
+      const dot = document.createElement('div');
+      dot.className = 'touch-dot';
+      dot.style.backgroundColor = colorObj.hex;
+      dot.textContent = isForbidden ? '❌' : '🎯';
 
-      circle.addEventListener('pointerdown', (e) => {
+      dot.addEventListener('pointerdown', (e) => {
         e.preventDefault();
         if (isForbidden) {
-          circle.style.transform = 'scale(1.2)';
-          recordResult(false);
-          alert('⚠️ Yasaklı renge dokunuldu!');
+          reactionDisplay.textContent = 'HATALI!';
         } else {
-          if (!circle.classList.contains('active')) {
-            circle.classList.add('active');
-            circle.style.opacity = '0.4';
+          if (!dot.classList.contains('active')) {
+            dot.classList.add('active');
             currentTouches++;
             
-            // Auto advance if all targets touched
+            const reaction = Date.now() - stepStartTime;
+            reactionDisplay.textContent = `${reaction} ms`;
+
             if (currentTouches >= requiredTouches) {
-              recordResult(true);
-              setTimeout(nextStep, 200);
+              clearTimeout(autoStepTimeout);
+              setTimeout(autoNextStep, 150);
             }
           }
         }
       });
 
-      container.appendChild(circle);
+      container.appendChild(dot);
     }
 
-    function recordResult(isCorrect) {
-      if (isCorrect) correctCount++;
-      else wrongCount++;
-    }
-
-    function finishSession() {
-      stopGame();
-      
-      const totalSteps = maxSteps;
-      const accuracy = Math.round((correctCount / (correctCount + wrongCount || 1)) * 100);
-      const avgTime = Math.round(reactionTimes.reduce((a, b) => a + b, 0) / (reactionTimes.length || 1));
-      const bestTime = reactionTimes.length > 0 ? Math.min(...reactionTimes) : 0;
-
-      document.getElementById('reportSteps').textContent = totalSteps;
-      document.getElementById('reportAccuracy').textContent = `%${accuracy}`;
-      document.getElementById('reportAvgTime').textContent = `${avgTime} ms`;
-      document.getElementById('reportBestTime').textContent = `${bestTime} ms`;
-
-      resultsModal.style.display = 'flex';
+    function recordScore(isCorrect) {
+      // Manual scoring by trainer
+      const status = isCorrect ? "🟢 Doğru" : "🔴 Hatalı";
+      reactionDisplay.textContent = status;
     }
   </script>
 </body>
