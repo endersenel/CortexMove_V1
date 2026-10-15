@@ -1,552 +1,886 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="tr" class="dark">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>CortexMove - SPPlab</title>
-  <style>
-    :root {
-      --bg-color: #0f172a;
-      --card-bg: #1e293b;
-      --text-color: #f8fafc;
-      --accent-color: #38bdf8;
-      --danger-color: #ef4444;
-      --success-color: #22c55e;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      user-select: none;
-      -webkit-user-select: none;
-      touch-action: manipulation;
-    }
-
-    body {
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-
-    /* Header */
-    header {
-      background-color: var(--card-bg);
-      padding: 12px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
-      z-index: 10;
-    }
-
-    .brand-title {
-      font-size: 1.4rem;
-      font-weight: bold;
-      color: var(--accent-color);
-    }
-
-    .brand-subtitle {
-      font-size: 0.75rem;
-      color: #94a3b8;
-      font-weight: 600;
-    }
-
-    .controls {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    select, button, label {
-      padding: 8px 12px;
-      border-radius: 8px;
-      border: 1px solid #334155;
-      background-color: #0f172a;
-      color: #fff;
-      font-size: 0.85rem;
-      cursor: pointer;
-    }
-
-    button.btn-primary {
-      background-color: var(--accent-color);
-      color: #0f172a;
-      font-weight: bold;
-      border: none;
-    }
-
-    .toggle-container {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      background: #0f172a;
-      padding: 6px 12px;
-      border-radius: 8px;
-      border: 1px solid #334155;
-      font-size: 0.85rem;
-    }
-
-    /* Info Bar */
-    .info-bar {
-      background-color: rgba(30, 41, 59, 0.8);
-      padding: 8px 20px;
-      display: flex;
-      justify-content: space-around;
-      font-size: 0.9rem;
-      border-bottom: 1px solid #334155;
-    }
-
-    .info-item span {
-      font-weight: bold;
-      color: var(--accent-color);
-    }
-
-    /* Main Area */
-    main {
-      flex: 1;
-      display: flex;
-      position: relative;
-    }
-
-    .side-panel {
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-      position: relative;
-    }
-
-    .side-panel.left {
-      border-right: 2px dashed #334155;
-    }
-
-    /* Original Display Card Style */
-    .card-display {
-      background-color: var(--card-bg);
-      border-radius: 20px;
-      padding: 30px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 15px;
-      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
-      border: 2px solid #334155;
-      width: 80%;
-      height: 70%;
-      max-width: 320px;
-      text-align: center;
-      position: relative;
-    }
-
-    .card-icon {
-      font-size: 5.5rem;
-      line-height: 1;
-    }
-
-    .card-label {
-      font-size: 1.2rem;
-      font-weight: 600;
-      color: #94a3b8;
-    }
-
-    /* Center Dual-Task Math Overlay */
-    .math-overlay {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background-color: var(--card-bg);
-      border: 2px solid var(--accent-color);
-      border-radius: 50%;
-      width: 100px;
-      height: 100px;
-      display: none;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
-      z-index: 5;
-    }
-
-    .math-overlay .title {
-      font-size: 0.6rem;
-      color: #94a3b8;
-    }
-
-    .math-overlay .content {
-      font-size: 1.2rem;
-      font-weight: bold;
-      color: #fff;
-    }
-
-    /* Touch Module Inside Card */
-    .touch-grid {
-      display: flex;
-      gap: 15px;
-      flex-wrap: wrap;
-      justify-content: center;
-      align-items: center;
-      width: 100%;
-      height: 100%;
-    }
-
-    .touch-dot {
-      width: 75px;
-      height: 75px;
-      border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 1.2rem;
-      font-weight: bold;
-      color: white;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.4);
-      cursor: pointer;
-    }
-
-    .touch-dot.active {
-      transform: scale(0.9);
-      opacity: 0.3;
-    }
-
-    /* Instruction Box */
-    .instruction-banner {
-      position: absolute;
-      top: 10px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(15, 23, 42, 0.9);
-      padding: 6px 16px;
-      border-radius: 20px;
-      border: 1px solid var(--accent-color);
-      font-size: 0.85rem;
-      color: var(--accent-color);
-      z-index: 4;
-      pointer-events: none;
-    }
-
-    /* Footer */
-    footer {
-      background-color: var(--card-bg);
-      padding: 10px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-top: 1px solid #334155;
-      font-size: 0.8rem;
-      color: #94a3b8;
-    }
-
-    .trainer-btn {
-      padding: 8px 16px;
-      font-weight: bold;
-      border: none;
-      border-radius: 6px;
-    }
-    .btn-correct { background-color: var(--success-color); color: #fff; }
-    .btn-wrong { background-color: var(--danger-color); color: #fff; }
-  </style>
-</head>
-<body>
-
-  <!-- Header -->
-  <header>
-    <div>
-      <div class="brand-title">🧠 CortexMove</div>
-      <div class="brand-subtitle">Sporda Performans Psikolojisi Lab (SPPlab)</div>
-    </div>
-    
-    <div class="controls">
-      <select id="moduleSelect">
-        <option value="hand">1. El Hareketleri Modülü</option>
-        <option value="touch">2. Dokunmatik Renk Modülü</option>
-      </select>
-
-      <select id="difficultySelect">
-        <option value="easy">Kolay (3 sn)</option>
-        <option value="medium" selected>Orta (2 sn)</option>
-        <option value="hard">Zor (1.2 sn)</option>
-        <option value="expert">Çok Zor (0.8 sn)</option>
-      </select>
-
-      <div class="toggle-container">
-        <input type="checkbox" id="mathToggle">
-        <label for="mathToggle" style="padding:0; border:none; background:none;">Matematik Görevi</label>
-      </div>
-
-      <button id="startBtn" class="btn-primary">Başlat</button>
-    </div>
-  </header>
-
-  <!-- Info Bar -->
-  <div class="info-bar">
-    <div class="info-item">Süre: <span id="timerDisplay">00:00</span></div>
-    <div class="info-item">Aşama: <span id="stepDisplay">0 / 15</span></div>
-    <div class="info-item">Tepki: <span id="reactionDisplay">0 ms</span></div>
-  </div>
-
-  <!-- Main Area -->
-  <main>
-    <div class="instruction-banner" id="instructionBanner">Egzersizi başlatmak için 'Başlat' butonuna basın.</div>
-    
-    <!-- Left Display Panel -->
-    <div class="side-panel left">
-      <div class="card-display" id="leftCard">
-        <div class="card-icon" id="leftIcon">✊</div>
-        <div class="card-label" id="leftLabel">SOL EL</div>
-        <div class="touch-grid" id="leftTouchGrid" style="display:none;"></div>
-      </div>
-    </div>
-
-    <!-- Center Math Overlay -->
-    <div class="math-overlay" id="mathOverlay">
-      <div class="title">MATEMATİK</div>
-      <div class="content" id="mathContent">3 + 4</div>
-    </div>
-
-    <!-- Right Display Panel -->
-    <div class="side-panel right">
-      <div class="card-display" id="rightCard">
-        <div class="card-icon" id="rightIcon">🖐️</div>
-        <div class="card-label" id="rightLabel">SAĞ EL</div>
-        <div class="touch-grid" id="rightTouchGrid" style="display:none;"></div>
-      </div>
-    </div>
-  </main>
-
-  <!-- Footer -->
-  <footer>
-    <div>SPPlab - CortexMove | Otomatik Geçiş Sistemi Active</div>
-    <div style="display:flex; gap:10px;">
-      <button class="trainer-btn btn-wrong" id="wrongBtn">🔴 Hatalı (Z)</button>
-      <button class="trainer-btn btn-correct" id="correctBtn">🟢 Doğru (A)</button>
-    </div>
-  </footer>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>CortexMove - SPPlab | Nöromotor Egzersiz Platformu</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
   <script>
-    // State Variables
-    let isRunning = false;
-    let currentStep = 0;
-    const maxSteps = 15;
-    let timerInterval = null;
-    let autoStepTimeout = null;
-    let startTime = 0;
-    let stepStartTime = 0;
-    
-    let requiredTouches = 0;
-    let currentTouches = 0;
-
-    // Movement Sets
-    const movements = [
-      { icon: '✊', name: 'Yumruk' },
-      { icon: '🖐️', name: 'Açık El' },
-      { icon: '✌️', name: 'Zafer' },
-      { icon: '👍', name: 'Başparmak' },
-      { icon: '🤏', name: 'Çimdik' },
-      { icon: '🤟', name: 'Rock' }
-    ];
-
-    const colors = [
-      { name: 'Mavi', hex: '#3b82f6' },
-      { name: 'Kırmızı', hex: '#ef4444' },
-      { name: 'Yeşil', hex: '#22c55e' },
-      { name: 'Sarı', hex: '#eab308' }
-    ];
-
-    // Difficulty Speeds (ms)
-    const speeds = {
-      easy: 3000,
-      medium: 2000,
-      hard: 1200,
-      expert: 800
-    };
-
-    // DOM Elements
-    const startBtn = document.getElementById('startBtn');
-    const moduleSelect = document.getElementById('moduleSelect');
-    const difficultySelect = document.getElementById('difficultySelect');
-    const mathToggle = document.getElementById('mathToggle');
-    
-    const timerDisplay = document.getElementById('timerDisplay');
-    const stepDisplay = document.getElementById('stepDisplay');
-    const reactionDisplay = document.getElementById('reactionDisplay');
-    const instructionBanner = document.getElementById('instructionBanner');
-    
-    const leftIcon = document.getElementById('leftIcon');
-    const leftLabel = document.getElementById('leftLabel');
-    const rightIcon = document.getElementById('rightIcon');
-    const rightLabel = document.getElementById('rightLabel');
-    
-    const leftTouchGrid = document.getElementById('leftTouchGrid');
-    const rightTouchGrid = document.getElementById('rightTouchGrid');
-    const mathOverlay = document.getElementById('mathOverlay');
-    const mathContent = document.getElementById('mathContent');
-
-    // Controls
-    startBtn.addEventListener('click', toggleGame);
-    document.getElementById('correctBtn').addEventListener('click', () => recordScore(true));
-    document.getElementById('wrongBtn').addEventListener('click', () => recordScore(false));
-
-    function toggleGame() {
-      if (isRunning) stopGame();
-      else startGame();
-    }
-
-    function startGame() {
-      isRunning = true;
-      currentStep = 0;
-      startBtn.textContent = 'Durdur';
-      startBtn.style.backgroundColor = 'var(--danger-color)';
-      
-      startTime = Date.now();
-      timerInterval = setInterval(updateTimer, 1000);
-      
-      autoNextStep();
-    }
-
-    function stopGame() {
-      isRunning = false;
-      clearInterval(timerInterval);
-      clearTimeout(autoStepTimeout);
-      startBtn.textContent = 'Başlat';
-      startBtn.style.backgroundColor = 'var(--accent-color)';
-      instructionBanner.textContent = "Egzersiz durduruldu.";
-    }
-
-    function updateTimer() {
-      const elapsed = Math.floor((Date.now() - startTime) / 1000);
-      const mins = String(Math.floor(elapsed / 60)).padStart(2, '0');
-      const secs = String(elapsed % 60).padStart(2, '0');
-      timerDisplay.textContent = `${mins}:${secs}`;
-    }
-
-    function autoNextStep() {
-      if (!isRunning) return;
-
-      currentStep++;
-      if (currentStep > maxSteps) {
-        alert("🎉 Seans Tamamlandı!");
-        stopGame();
-        return;
-      }
-
-      stepDisplay.textContent = `${currentStep} / ${maxSteps}`;
-      stepStartTime = Date.now();
-
-      const activeModule = moduleSelect.value;
-      const speed = speeds[difficultySelect.value];
-
-      // Math Task Overlay Toggle
-      if (mathToggle.checked && Math.random() > 0.4) {
-        mathOverlay.style.display = 'flex';
-        const num1 = Math.floor(Math.random() * 9) + 1;
-        const num2 = Math.floor(Math.random() * 9) + 1;
-        mathContent.textContent = `${num1} + ${num2}`;
-      } else {
-        mathOverlay.style.display = 'none';
-      }
-
-      // Render Module
-      if (activeModule === 'hand') {
-        renderHandModule();
-      } else {
-        renderTouchModule();
-      }
-
-      // Set timeout for automatic next step (Random/Rastgele Otomatik Akış)
-      autoStepTimeout = setTimeout(() => {
-        autoNextStep();
-      }, speed);
-    }
-
-    function renderHandModule() {
-      leftIcon.style.display = 'block';
-      leftLabel.style.display = 'block';
-      rightIcon.style.display = 'block';
-      rightLabel.style.display = 'block';
-      leftTouchGrid.style.display = 'none';
-      rightTouchGrid.style.display = 'none';
-
-      instructionBanner.textContent = '🖐️ Şekillere göre hareketi ellerinizle yapın!';
-
-      const left = movements[Math.floor(Math.random() * movements.length)];
-      const right = movements[Math.floor(Math.random() * movements.length)];
-
-      leftIcon.textContent = left.icon;
-      leftLabel.textContent = left.name;
-      rightIcon.textContent = right.icon;
-      rightLabel.textContent = right.name;
-    }
-
-    function renderTouchModule() {
-      leftIcon.style.display = 'none';
-      leftLabel.style.display = 'none';
-      rightIcon.style.display = 'none';
-      rightLabel.style.display = 'none';
-      leftTouchGrid.style.display = 'flex';
-      rightTouchGrid.style.display = 'flex';
-
-      leftTouchGrid.innerHTML = '';
-      rightTouchGrid.innerHTML = '';
-
-      const targetColor = colors[Math.floor(Math.random() * colors.length)];
-      const forbiddenColor = colors.find(c => c.hex !== targetColor.hex);
-
-      instructionBanner.textContent = `👉 HEDEF: ${targetColor.name} dairelere basın! (${forbiddenColor.name} renge dokunmayın!)`;
-
-      requiredTouches = 2;
-      currentTouches = 0;
-
-      // Add Target Dot to Left & Right
-      createDot(leftTouchGrid, targetColor);
-      createDot(rightTouchGrid, targetColor);
-
-      // Add Decoy/Forbidden Dot randomly
-      if (Math.random() > 0.5) {
-        createDot(leftTouchGrid, forbiddenColor, true);
-      }
-    }
-
-    function createDot(container, colorObj, isForbidden = false) {
-      const dot = document.createElement('div');
-      dot.className = 'touch-dot';
-      dot.style.backgroundColor = colorObj.hex;
-      dot.textContent = isForbidden ? '❌' : '🎯';
-
-      dot.addEventListener('pointerdown', (e) => {
-        e.preventDefault();
-        if (isForbidden) {
-          reactionDisplay.textContent = 'HATALI!';
-        } else {
-          if (!dot.classList.contains('active')) {
-            dot.classList.add('active');
-            currentTouches++;
-            
-            const reaction = Date.now() - stepStartTime;
-            reactionDisplay.textContent = `${reaction} ms`;
-
-            if (currentTouches >= requiredTouches) {
-              clearTimeout(autoStepTimeout);
-              setTimeout(autoNextStep, 150);
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            neuro: {
+              50: '#f0f9ff',
+              500: '#06b6d4',
+              600: '#0891b2',
+              900: '#0f172a',
+              950: '#020617'
             }
           }
         }
-      });
+      }
+    }
+  </script>
 
-      container.appendChild(dot);
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .font-mono-custom {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    @keyframes pulse-ring {
+      0% { transform: scale(0.96); opacity: 0.8; }
+      50% { transform: scale(1.02); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .animate-gesture {
+      animation: pulse-ring 0.2s cubic-bezier(0, 0, 0.2, 1);
+    }
+    .stroop-green { border-color: #22c55e !important; background-color: rgba(34, 197, 94, 0.08) !important; }
+    .stroop-red { border-color: #ef4444 !important; background-color: rgba(239, 68, 68, 0.08) !important; }
+    .stroop-blue { border-color: #3b82f6 !important; background-color: rgba(59, 130, 246, 0.08) !important; }
+    
+    /* Touch Target Styles */
+    .touch-dot {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: #38bdf8;
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.1s, opacity 0.1s;
+    }
+    .touch-dot:active, .touch-dot.active {
+      transform: scale(0.85);
+      opacity: 0.4;
+      background: #22c55e;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between overflow-x-hidden selection:bg-cyan-500 selection:text-white">
+
+  <!-- TOP NAVIGATION / APP HEADER -->
+  <header class="bg-slate-900/90 border-b border-slate-800 backdrop-blur-md sticky top-0 z-40 px-4 py-3">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+      
+      <!-- Brand & Title -->
+      <div class="flex items-center space-x-3">
+        <div class="bg-gradient-to-tr from-cyan-500 via-blue-600 to-indigo-600 p-2.5 rounded-2xl shadow-lg shadow-cyan-500/20">
+          <i class="fa-solid fa-brain text-white text-xl"></i>
+        </div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <h1 class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-cyan-400 via-sky-300 to-indigo-400 bg-clip-text text-transparent">
+              CortexMove
+            </h1>
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 uppercase tracking-wider">SPPlab v2.5 Pro</span>
+          </div>
+          <p class="text-xs text-slate-400 hidden sm:block">Sporda Performans Psikolojisi Lab (SPPlab)</p>
+        </div>
+      </div>
+
+      <!-- Quick Control Badges -->
+      <div class="flex items-center space-x-2 sm:space-x-3">
+        <div class="bg-slate-900 px-3 py-1.5 rounded-xl border border-slate-800 flex items-center space-x-2">
+          <i class="fa-solid fa-bullseye text-emerald-400 text-xs"></i>
+          <span class="text-xs text-slate-400 font-medium">Doğruluk:</span>
+          <span id="badgeAccuracy" class="text-xs font-bold text-emerald-400 font-mono-custom">100%</span>
+        </div>
+
+        <div class="bg-slate-900 px-3 py-1.5 rounded-xl border border-slate-800 flex items-center space-x-2">
+          <i class="fa-solid fa-stopwatch text-amber-400 text-xs"></i>
+          <span class="text-xs text-slate-400 font-medium">Ort. Tepki:</span>
+          <span id="badgeReaction" class="text-xs font-bold text-amber-400 font-mono-custom">0 ms</span>
+        </div>
+
+        <button onclick="toggleFullscreen()" class="p-2 bg-slate-800 hover:bg-slate-700 rounded-xl border border-slate-700 text-slate-300 transition" title="Tam Ekran">
+          <i class="fa-solid fa-expand"></i>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- MAIN DASHBOARD CONTENT -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 flex flex-col justify-between gap-6">
+
+    <!-- MODULE CONFIGURATION PANEL -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 bg-slate-900/70 border border-slate-800/80 rounded-2xl p-4 shadow-xl backdrop-blur-sm">
+      
+      <!-- 1. Active Module Selection -->
+      <div class="flex flex-col justify-between">
+        <label class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center">
+          <i class="fa-solid fa-cubes text-cyan-400 mr-1.5"></i> Çalışma Modülü
+        </label>
+        <select id="moduleSelect" onchange="setActiveModule(this.value)" class="bg-slate-950 border border-slate-800 text-slate-200 text-xs font-semibold rounded-xl p-2.5 focus:ring-2 focus:ring-cyan-500 outline-none">
+          <option value="gesture">✋ 1. El Hareketleri Egzersizi</option>
+          <option value="touchDots">👉 2. Dokunmatik Nokta (Tek/Çift Parmak)</option>
+          <option value="touchMixed">✊ 3. Dokunmatik Karma (Yumruk & Nokta)</option>
+        </select>
+      </div>
+
+      <!-- 2. Difficulty Level -->
+      <div class="flex flex-col justify-between">
+        <label class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center">
+          <i class="fa-solid fa-layer-group text-cyan-400 mr-1.5"></i> Zorluk Seviyesi
+        </label>
+        <div class="grid grid-cols-4 gap-1 bg-slate-950 p-1 rounded-xl border border-slate-800">
+          <button id="btnEasy" onclick="setDifficulty('easy')" class="py-1.5 text-xs font-bold rounded-lg bg-cyan-600 text-white transition">Kolay</button>
+          <button id="btnMedium" onclick="setDifficulty('medium')" class="py-1.5 text-xs font-bold rounded-lg text-slate-400 hover:text-slate-200 transition">Orta</button>
+          <button id="btnHard" onclick="setDifficulty('hard')" class="py-1.5 text-xs font-bold rounded-lg text-slate-400 hover:text-slate-200 transition">Zor</button>
+          <button id="btnVeryHard" onclick="setDifficulty('veryhard')" class="py-1.5 text-xs font-bold rounded-lg text-slate-400 hover:text-slate-200 transition">Çok Zor</button>
+        </div>
+      </div>
+
+      <!-- 3. Exercise Mode -->
+      <div class="flex flex-col justify-between">
+        <label class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center">
+          <i class="fa-solid fa-sliders text-indigo-400 mr-1.5"></i> Egzersiz Modu
+        </label>
+        <select id="modeSelect" onchange="setExerciseMode(this.value)" class="bg-slate-950 border border-slate-800 text-slate-200 text-xs font-semibold rounded-xl p-2.5 focus:ring-2 focus:ring-cyan-500 outline-none">
+          <option value="standard">🎯 Standart Mod (Doğrudan Eşleşme)</option>
+          <option value="cross">🔀 Çapraz / Zıt Mod (Ters El Kontrolü)</option>
+          <option value="stroop">🎨 Stroop Renk Modu (Kural Değişimi)</option>
+        </select>
+      </div>
+
+      <!-- 4. Dual Task & Metronome -->
+      <div class="flex flex-col justify-between">
+        <label class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center">
+          <i class="fa-solid fa-brain text-purple-400 mr-1.5"></i> Zihinsel Görev & Ritim
+        </label>
+        <div class="flex items-center justify-between gap-2">
+          <button id="btnDualTask" onclick="toggleDualTask()" class="flex-1 py-2 px-2 bg-slate-950 border border-slate-800 hover:border-slate-700 rounded-xl text-xs font-bold text-slate-400 flex items-center justify-center space-x-1 transition">
+            <i class="fa-solid fa-calculator text-purple-400"></i>
+            <span id="dualTaskLabel">Mat: KAPALI</span>
+          </button>
+          <button id="btnMetronome" onclick="toggleMetronome()" class="py-2 px-2 bg-slate-950 border border-slate-800 hover:border-slate-700 rounded-xl text-xs font-bold text-slate-400 flex items-center justify-center space-x-1 transition">
+            <i class="fa-solid fa-drum text-amber-400"></i>
+            <span id="metroLabel">Metronom</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- MAIN DISPLAY AREA (NEUROMOTOR STAGE) -->
+    <div id="stageContainer" class="w-full flex-1 bg-slate-900/50 border-2 border-slate-800 rounded-3xl p-6 sm:p-8 flex flex-col justify-between items-center relative shadow-2xl transition-all duration-300 min-h-[380px]">
+      
+      <!-- STROOP MODE INSTRUCTION BANNER -->
+      <div id="stroopBanner" class="w-full max-w-lg mb-4 py-2 px-4 rounded-xl text-xs font-bold text-center border hidden transition-all duration-200">
+      </div>
+
+      <!-- CARDS LAYOUT: LEFT HAND | COGNITIVE CENTER | RIGHT HAND -->
+      <div class="w-full max-w-5xl grid grid-cols-1 md:grid-cols-11 gap-4 items-center my-auto">
+        
+        <!-- LEFT HAND CARD -->
+        <div id="leftCard" class="md:col-span-5 bg-slate-900 border-2 border-slate-800 rounded-3xl p-6 flex flex-col items-center justify-between shadow-2xl relative overflow-hidden transition-all duration-200 min-h-[260px]">
+          <div class="w-full flex justify-between items-center border-b border-slate-800 pb-3 mb-2">
+            <span class="text-xs font-black uppercase tracking-widest text-cyan-400 flex items-center">
+              <i class="fa-solid fa-hand-back-fist mr-2"></i> SOL EL
+            </span>
+            <span id="leftGestureName" class="text-xs font-bold text-slate-400 bg-slate-950 px-3 py-1 rounded-full border border-slate-800">Yumruk</span>
+          </div>
+
+          <!-- Left Gesture Display -->
+          <div id="leftGestureContainer" class="my-4 text-8xl sm:text-9xl transition-transform duration-150 select-none drop-shadow-md">
+            ✊
+          </div>
+
+          <!-- Left Touch Interactive Container -->
+          <div id="leftTouchArea" class="my-4 hidden flex-wrap gap-4 items-center justify-center min-h-[120px]">
+          </div>
+
+          <div class="w-full bg-slate-950 rounded-full h-2 overflow-hidden border border-slate-800">
+            <div id="leftProgressBar" class="bg-cyan-500 h-full w-0 transition-all duration-75"></div>
+          </div>
+        </div>
+
+        <!-- COGNITIVE DUAL TASK CENTER DISPLAY -->
+        <div class="md:col-span-1 flex flex-col items-center justify-center my-2 md:my-0">
+          <div id="dualTaskBox" class="hidden w-full md:w-24 h-24 bg-purple-950/40 border-2 border-purple-500/40 rounded-2xl flex flex-col items-center justify-center p-2 text-center shadow-lg shadow-purple-500/10">
+            <span class="text-[10px] font-extrabold uppercase text-purple-400 tracking-wider">ZİHİN</span>
+            <span id="dualTaskQuestion" class="text-lg font-black text-white font-mono-custom my-1">8 + 5</span>
+            <span class="text-[9px] text-purple-300/70">Cevapla</span>
+          </div>
+          <div id="modeIconBadge" class="md:flex hidden w-10 h-10 rounded-full bg-slate-800 border border-slate-700 items-center justify-center text-slate-400 text-sm">
+            <i class="fa-solid fa-arrows-split-up-and-left"></i>
+          </div>
+        </div>
+
+        <!-- RIGHT HAND CARD -->
+        <div id="rightCard" class="md:col-span-5 bg-slate-900 border-2 border-slate-800 rounded-3xl p-6 flex flex-col items-center justify-between shadow-2xl relative overflow-hidden transition-all duration-200 min-h-[260px]">
+          <div class="w-full flex justify-between items-center border-b border-slate-800 pb-3 mb-2">
+            <span class="text-xs font-black uppercase tracking-widest text-emerald-400 flex items-center">
+              SAĞ EL <i class="fa-solid fa-hand-back-fist ml-2"></i>
+            </span>
+            <span id="rightGestureName" class="text-xs font-bold text-slate-400 bg-slate-950 px-3 py-1 rounded-full border border-slate-800">Açık El</span>
+          </div>
+
+          <!-- Right Gesture Display -->
+          <div id="rightGestureContainer" class="my-4 text-8xl sm:text-9xl transition-transform duration-150 select-none drop-shadow-md">
+            🖐️
+          </div>
+
+          <!-- Right Touch Interactive Container -->
+          <div id="rightTouchArea" class="my-4 hidden flex-wrap gap-4 items-center justify-center min-h-[120px]">
+          </div>
+
+          <div class="w-full bg-slate-950 rounded-full h-2 overflow-hidden border border-slate-800">
+            <div id="rightProgressBar" class="bg-emerald-500 h-full w-0 transition-all duration-75"></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- TIMER & SPEED SETTINGS BAR -->
+      <div class="w-full max-w-3xl mt-6 flex flex-wrap items-center justify-between gap-4 bg-slate-950/80 px-4 py-3 rounded-2xl border border-slate-800">
+        
+        <div class="flex items-center space-x-3 flex-1 min-w-[200px]">
+          <i class="fa-solid fa-gauge-high text-cyan-400 text-sm"></i>
+          <div class="flex-1">
+            <div class="flex justify-between text-xs text-slate-400 font-bold mb-1">
+              <span>Süre Tempo</span>
+              <span id="speedLabel" class="text-cyan-400 font-mono-custom">2.5 sn</span>
+            </div>
+            <input type="range" id="speedSlider" min="0.6" max="4.0" step="0.1" value="2.5" oninput="updateSpeedFromSlider(this.value)" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-500">
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-5 text-xs font-bold">
+          <div class="text-center">
+            <span class="text-slate-500 block uppercase text-[10px]">Tekrar</span>
+            <span id="counterRep" class="text-base text-white font-mono-custom">0</span>
+          </div>
+          <div class="h-6 w-px bg-slate-800"></div>
+          <div class="text-center">
+            <span class="text-slate-500 block uppercase text-[10px]">Toplam Süre</span>
+            <span id="counterTime" class="text-base text-cyan-400 font-mono-custom">00:00</span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- TRAINER & CONTROL PANEL -->
+    <div class="grid grid-cols-1 sm:grid-cols-12 gap-3 w-full max-w-4xl mx-auto">
+      
+      <button onclick="recordEvaluation(true)" class="sm:col-span-3 bg-emerald-950/40 hover:bg-emerald-900/60 border border-emerald-500/40 text-emerald-400 font-extrabold py-3.5 px-4 rounded-2xl transition active:scale-95 flex items-center justify-center space-x-2 shadow-lg">
+        <i class="fa-solid fa-circle-check text-lg"></i>
+        <span>DOĞRU (Sol Ok)</span>
+      </button>
+
+      <button id="btnStart" onclick="startExercise()" class="sm:col-span-4 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-black py-3.5 px-6 rounded-2xl shadow-lg shadow-cyan-500/20 active:scale-95 transition flex items-center justify-center text-lg space-x-2">
+        <i class="fa-solid fa-play"></i>
+        <span>BAŞLAT</span>
+      </button>
+
+      <button id="btnPause" onclick="pauseExercise()" class="hidden sm:col-span-4 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-3.5 px-6 rounded-2xl shadow-lg shadow-amber-500/20 active:scale-95 transition items-center justify-center text-lg space-x-2">
+        <i class="fa-solid fa-pause"></i>
+        <span>DURAKLAT</span>
+      </button>
+
+      <button onclick="recordEvaluation(false)" class="sm:col-span-3 bg-rose-950/40 hover:bg-rose-900/60 border border-rose-500/40 text-rose-400 font-extrabold py-3.5 px-4 rounded-2xl transition active:scale-95 flex items-center justify-center space-x-2 shadow-lg">
+        <i class="fa-solid fa-circle-xmark text-lg"></i>
+        <span>HATALI (Sağ Ok)</span>
+      </button>
+
+      <div class="sm:col-span-2 flex space-x-2">
+        <button onclick="resetExercise()" class="flex-1 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 font-bold p-3.5 rounded-2xl active:scale-95 transition flex items-center justify-center" title="Sıfırla">
+          <i class="fa-solid fa-rotate-left"></i>
+        </button>
+        <button onclick="openReportModal()" class="flex-1 bg-indigo-950/60 hover:bg-indigo-900/80 border border-indigo-700/50 text-indigo-300 font-bold p-3.5 rounded-2xl active:scale-95 transition flex items-center justify-center" title="Raporu Gör">
+          <i class="fa-solid fa-chart-pie"></i>
+        </button>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- REPORT MODAL -->
+  <div id="reportModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-lg w-full p-6 shadow-2xl relative overflow-hidden">
+      
+      <div class="flex items-center justify-between border-b border-slate-800 pb-4 mb-4">
+        <div class="flex items-center space-x-3">
+          <div class="bg-indigo-500/20 p-2 rounded-xl text-indigo-400">
+            <i class="fa-solid fa-chart-column text-xl"></i>
+          </div>
+          <div>
+            <h3 class="text-lg font-bold text-white">CortexMove Performans Raporu</h3>
+            <p class="text-xs text-slate-400">SPPlab Seans Analizi & Bilişsel Skor</p>
+          </div>
+        </div>
+        <button onclick="closeReportModal()" class="text-slate-400 hover:text-white p-2 text-lg">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3 mb-6">
+        <div class="bg-slate-950 p-3.5 rounded-2xl border border-slate-800/80">
+          <span class="text-[11px] text-slate-400 font-medium uppercase">Başarı Oranı</span>
+          <p id="rptAccuracy" class="text-2xl font-black text-emerald-400 font-mono-custom mt-1">100%</p>
+        </div>
+        <div class="bg-slate-950 p-3.5 rounded-2xl border border-slate-800/80">
+          <span class="text-[11px] text-slate-400 font-medium uppercase">Ort. Tepki Süresi</span>
+          <p id="rptReaction" class="text-2xl font-black text-amber-400 font-mono-custom mt-1">0 ms</p>
+        </div>
+        <div class="bg-slate-950 p-3.5 rounded-2xl border border-slate-800/80">
+          <span class="text-[11px] text-slate-400 font-medium uppercase">Doğru / Hata</span>
+          <p id="rptCounts" class="text-lg font-bold text-white font-mono-custom mt-1">0 / 0</p>
+        </div>
+        <div class="bg-slate-950 p-3.5 rounded-2xl border border-slate-800/80">
+          <span class="text-[11px] text-slate-400 font-medium uppercase">Toplam Tekrar</span>
+          <p id="rptReps" class="text-lg font-bold text-cyan-400 font-mono-custom mt-1">0</p>
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-3">
+        <button onclick="downloadCSVReport()" class="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-4 rounded-xl text-xs transition flex items-center justify-center space-x-2">
+          <i class="fa-solid fa-download"></i>
+          <span>Raporu İndir (CSV)</span>
+        </button>
+        <button onclick="closeReportModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-3 px-5 rounded-xl text-xs transition">
+          Kapat
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    // --- GESTURE DATABASE ---
+    const GESTURES = {
+      fist: { emoji: '✊', name: 'Yumruk', type: 'fist' },
+      open: { emoji: '🖐️', name: 'Açık El', type: 'open' },
+      peace: { emoji: '✌️', name: 'Zafer', type: 'peace' },
+      thumb: { emoji: '👍', name: 'Başparmak', type: 'thumb' },
+      pinch: { emoji: '🤏', name: 'Çimdik', type: 'pinch' },
+      rock: { emoji: '🤟', name: 'Rock / Sevgi', type: 'rock' },
+      pointLeft: { emoji: '👈', name: 'Sol İşaret', type: 'point' },
+      pointRight: { emoji: '👉', name: 'Sağ İşaret', type: 'point' },
+      // Touch Dots
+      oneDot: { emoji: '🔵', name: 'Tek Parmak Dokun', type: 'touch', count: 1 },
+      twoDots: { emoji: '🔵🔵', name: 'Çift Parmak Dokun', type: 'touch', count: 2 }
+    };
+
+    // --- DIFFICULTY CONFIG ---
+    const DIFFICULTY_CONFIG = {
+      easy: {
+        gestures: [GESTURES.fist, GESTURES.open],
+        dots: [GESTURES.oneDot, GESTURES.twoDots],
+        defaultSpeed: 2.5
+      },
+      medium: {
+        gestures: [GESTURES.fist, GESTURES.open, GESTURES.peace, GESTURES.thumb],
+        dots: [GESTURES.oneDot, GESTURES.twoDots],
+        defaultSpeed: 2.0
+      },
+      hard: {
+        gestures: [GESTURES.fist, GESTURES.open, GESTURES.peace, GESTURES.thumb, GESTURES.pinch, GESTURES.rock],
+        dots: [GESTURES.oneDot, GESTURES.twoDots],
+        defaultSpeed: 1.5
+      },
+      veryhard: {
+        gestures: [GESTURES.fist, GESTURES.open, GESTURES.peace, GESTURES.thumb, GESTURES.pinch, GESTURES.rock, GESTURES.pointLeft, GESTURES.pointRight],
+        dots: [GESTURES.oneDot, GESTURES.twoDots],
+        defaultSpeed: 1.0
+      }
+    };
+
+    // --- STATE VARIABLES ---
+    let activeModule = 'gesture'; // 'gesture', 'touchDots', 'touchMixed'
+    let currentDifficulty = 'easy';
+    let exerciseMode = 'standard';
+    let isDualTaskActive = false;
+    let isMetronomeActive = false;
+
+    let isRunning = false;
+    let stepIntervalTime = 2500;
+    
+    let stepTimer = null;
+    let clockTimer = null;
+    let progressTimer = null;
+    let metronomeInterval = null;
+
+    let elapsedTime = 0;
+    let repCount = 0;
+
+    let currentLeftItem = GESTURES.fist;
+    let currentRightItem = GESTURES.open;
+
+    // Multi-touch tracking
+    let requiredTouchesLeft = 0;
+    let requiredTouchesRight = 0;
+    let touchesCompletedLeft = 0;
+    let touchesCompletedRight = 0;
+
+    let stepStartTime = 0;
+    let reactionTimes = [];
+    let correctCount = 0;
+    let wrongCount = 0;
+
+    let currentStroopColor = 'green';
+    let audioCtx = null;
+
+    window.addEventListener('DOMContentLoaded', () => {
+      setDifficulty('easy');
+      renderCurrentStep();
+      setupKeyboardControls();
+    });
+
+    function setupKeyboardControls() {
+      document.addEventListener('keydown', (e) => {
+        if (e.code === 'Space') {
+          e.preventDefault();
+          if (isRunning) pauseExercise(); else startExercise();
+        } else if (e.code === 'ArrowLeft') {
+          recordEvaluation(true);
+        } else if (e.code === 'ArrowRight') {
+          recordEvaluation(false);
+        }
+      });
     }
 
-    function recordScore(isCorrect) {
-      // Manual scoring by trainer
-      const status = isCorrect ? "🟢 Doğru" : "🔴 Hatalı";
-      reactionDisplay.textContent = status;
+    function playBeep(freq = 600, duration = 0.08) {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {
+        console.warn(e);
+      }
+    }
+
+    function setActiveModule(mod) {
+      activeModule = mod;
+      renderCurrentStep();
+    }
+
+    function setDifficulty(level) {
+      currentDifficulty = level;
+
+      ['Easy', 'Medium', 'Hard', 'VeryHard'].forEach(lvl => {
+        const btn = document.getElementById('btn' + lvl);
+        if (lvl.toLowerCase() === level) {
+          btn.className = "py-1.5 text-xs font-bold rounded-lg bg-cyan-600 text-white transition";
+        } else {
+          btn.className = "py-1.5 text-xs font-bold rounded-lg text-slate-400 hover:text-slate-200 transition";
+        }
+      });
+
+      const config = DIFFICULTY_CONFIG[level];
+      updateSpeedFromSlider(config.defaultSpeed);
+
+      if (isRunning) restartTimers();
+    }
+
+    function setExerciseMode(mode) {
+      exerciseMode = mode;
+      const stroopBanner = document.getElementById('stroopBanner');
+
+      if (mode === 'stroop') {
+        stroopBanner.classList.remove('hidden');
+      } else {
+        stroopBanner.classList.add('hidden');
+      }
+
+      renderCurrentStep();
+    }
+
+    function toggleDualTask() {
+      isDualTaskActive = !isDualTaskActive;
+      const btn = document.getElementById('btnDualTask');
+      const box = document.getElementById('dualTaskBox');
+      const label = document.getElementById('dualTaskLabel');
+
+      if (isDualTaskActive) {
+        btn.className = "flex-1 py-2 px-2 bg-purple-950/80 border border-purple-500/50 rounded-xl text-xs font-bold text-purple-300 flex items-center justify-center space-x-1 transition";
+        label.innerText = "Mat: AÇIK";
+        box.classList.remove('hidden');
+        generateMathQuestion();
+      } else {
+        btn.className = "flex-1 py-2 px-2 bg-slate-950 border border-slate-800 hover:border-slate-700 rounded-xl text-xs font-bold text-slate-400 flex items-center justify-center space-x-1 transition";
+        label.innerText = "Mat: KAPALI";
+        box.classList.add('hidden');
+      }
+    }
+
+    function generateMathQuestion() {
+      const a = Math.floor(Math.random() * 12) + 2;
+      const b = Math.floor(Math.random() * 12) + 1;
+      const ops = ['+', '-'];
+      const op = ops[Math.floor(Math.random() * ops.length)];
+      document.getElementById('dualTaskQuestion').innerText = `${a} ${op} ${b}`;
+    }
+
+    function toggleMetronome() {
+      isMetronomeActive = !isMetronomeActive;
+      const btn = document.getElementById('btnMetronome');
+
+      if (isMetronomeActive) {
+        btn.className = "py-2 px-2 bg-amber-950/80 border border-amber-500/50 rounded-xl text-xs font-bold text-amber-300 flex items-center justify-center space-x-1 transition";
+        if (isRunning) startMetronome();
+      } else {
+        btn.className = "py-2 px-2 bg-slate-950 border border-slate-800 hover:border-slate-700 rounded-xl text-xs font-bold text-slate-400 flex items-center justify-center space-x-1 transition";
+        stopMetronome();
+      }
+    }
+
+    function startMetronome() {
+      stopMetronome();
+      metronomeInterval = setInterval(() => {
+        playBeep(900, 0.04);
+      }, stepIntervalTime / 2);
+    }
+
+    function stopMetronome() {
+      clearInterval(metronomeInterval);
+    }
+
+    function updateSpeedFromSlider(val) {
+      const seconds = parseFloat(val);
+      stepIntervalTime = seconds * 1000;
+      document.getElementById('speedSlider').value = seconds;
+      document.getElementById('speedLabel').innerText = seconds.toFixed(1) + ' sn';
+
+      if (isRunning) restartTimers();
+    }
+
+    function startExercise() {
+      if (isRunning) return;
+      isRunning = true;
+
+      document.getElementById('btnStart').classList.add('hidden');
+      document.getElementById('btnPause').classList.remove('hidden');
+      document.getElementById('btnPause').classList.add('flex');
+
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+      startTimers();
+      if (isMetronomeActive) startMetronome();
+      playBeep(800, 0.15);
+    }
+
+    function pauseExercise() {
+      if (!isRunning) return;
+      isRunning = false;
+
+      document.getElementById('btnPause').classList.add('hidden');
+      document.getElementById('btnPause').classList.remove('flex');
+      document.getElementById('btnStart').classList.remove('hidden');
+
+      stopTimers();
+      stopMetronome();
+    }
+
+    function resetExercise() {
+      pauseExercise();
+      elapsedTime = 0;
+      repCount = 0;
+      correctCount = 0;
+      wrongCount = 0;
+      reactionTimes = [];
+
+      document.getElementById('counterTime').innerText = "00:00";
+      document.getElementById('counterRep').innerText = "0";
+      document.getElementById('badgeAccuracy').innerText = "100%";
+      document.getElementById('badgeReaction').innerText = "0 ms";
+
+      document.getElementById('leftProgressBar').style.width = '0%';
+      document.getElementById('rightProgressBar').style.width = '0%';
+
+      currentLeftItem = GESTURES.fist;
+      currentRightItem = GESTURES.open;
+      renderCurrentStep();
+    }
+
+    function startTimers() {
+      stopTimers();
+
+      clockTimer = setInterval(() => {
+        elapsedTime++;
+        const mins = Math.floor(elapsedTime / 60).toString().padStart(2, '0');
+        const secs = (elapsedTime % 60).toString().padStart(2, '0');
+        document.getElementById('counterTime').innerText = `${mins}:${secs}`;
+      }, 1000);
+
+      stepStartTime = Date.now();
+
+      progressTimer = setInterval(() => {
+        const elapsed = Date.now() - stepStartTime;
+        const pct = Math.min(100, (elapsed / stepIntervalTime) * 100);
+        document.getElementById('leftProgressBar').style.width = pct + '%';
+        document.getElementById('rightProgressBar').style.width = pct + '%';
+      }, 30);
+
+      stepTimer = setInterval(() => {
+        nextStep();
+      }, stepIntervalTime);
+    }
+
+    function stopTimers() {
+      clearInterval(clockTimer);
+      clearInterval(stepTimer);
+      clearInterval(progressTimer);
+    }
+
+    function restartTimers() {
+      if (isRunning) {
+        stopTimers();
+        startTimers();
+        if (isMetronomeActive) startMetronome();
+      }
+    }
+
+    function nextStep() {
+      const reaction = Date.now() - stepStartTime;
+      reactionTimes.push(reaction);
+      updateStatsBadges();
+
+      stepStartTime = Date.now();
+
+      const config = DIFFICULTY_CONFIG[currentDifficulty];
+      let poolLeft = config.gestures;
+      let poolRight = config.gestures;
+
+      if (activeModule === 'touchDots') {
+        poolLeft = config.dots;
+        poolRight = config.dots;
+      } else if (activeModule === 'touchMixed') {
+        const mixedPool = [...config.gestures, ...config.dots];
+        poolLeft = mixedPool;
+        poolRight = mixedPool;
+      }
+
+      let newLeft, newRight;
+      do {
+        newLeft = poolLeft[Math.floor(Math.random() * poolLeft.length)];
+        newRight = poolRight[Math.floor(Math.random() * poolRight.length)];
+      } while (newLeft === currentLeftItem && newRight === currentRightItem);
+
+      currentLeftItem = newLeft;
+      currentRightItem = newRight;
+
+      if (exerciseMode === 'stroop') {
+        const colors = ['green', 'red', 'blue'];
+        currentStroopColor = colors[Math.floor(Math.random() * colors.length)];
+      }
+
+      if (isDualTaskActive) generateMathQuestion();
+
+      repCount++;
+      document.getElementById('counterRep').innerText = repCount;
+
+      renderCurrentStep();
+      playBeep(650, 0.06);
+    }
+
+    function recordEvaluation(isCorrect) {
+      if (isCorrect) correctCount++; else wrongCount++;
+      updateStatsBadges();
+      playBeep(isCorrect ? 1000 : 300, 0.1);
+    }
+
+    function updateStatsBadges() {
+      const total = correctCount + wrongCount;
+      const accuracy = total > 0 ? Math.round((correctCount / total) * 100) : 100;
+      document.getElementById('badgeAccuracy').innerText = `${accuracy}%`;
+
+      const avgReaction = reactionTimes.length > 0 
+        ? Math.round(reactionTimes.reduce((a, b) => a + b, 0) / reactionTimes.length) 
+        : 0;
+      document.getElementById('badgeReaction').innerText = `${avgReaction} ms`;
+    }
+
+    function renderCurrentStep() {
+      let displayLeft = currentLeftItem;
+      let displayRight = currentRightItem;
+
+      if (exerciseMode === 'cross') {
+        displayLeft = currentRightItem;
+        displayRight = currentLeftItem;
+      }
+
+      const leftContainer = document.getElementById('leftGestureContainer');
+      const leftTouchArea = document.getElementById('leftTouchArea');
+      const rightContainer = document.getElementById('rightGestureContainer');
+      const rightTouchArea = document.getElementById('rightTouchArea');
+
+      // Left Render
+      document.getElementById('leftGestureName').innerText = displayLeft.name;
+      if (displayLeft.type === 'touch') {
+        leftContainer.classList.add('hidden');
+        leftTouchArea.classList.remove('hidden');
+        leftTouchArea.classList.add('flex');
+        renderTouchArea(leftTouchArea, displayLeft.count, 'left');
+      } else {
+        leftTouchArea.classList.add('hidden');
+        leftTouchArea.classList.remove('flex');
+        leftContainer.classList.remove('hidden');
+        leftContainer.innerText = displayLeft.emoji;
+      }
+
+      // Right Render
+      document.getElementById('rightGestureName').innerText = displayRight.name;
+      if (displayRight.type === 'touch') {
+        rightContainer.classList.add('hidden');
+        rightTouchArea.classList.remove('hidden');
+        rightTouchArea.classList.add('flex');
+        renderTouchArea(rightTouchArea, displayRight.count, 'right');
+      } else {
+        rightTouchArea.classList.add('hidden');
+        rightTouchArea.classList.remove('flex');
+        rightContainer.classList.remove('hidden');
+        rightContainer.innerText = displayRight.emoji;
+      }
+
+      // Trigger Pulse Animation
+      leftContainer.classList.remove('animate-gesture');
+      rightContainer.classList.remove('animate-gesture');
+      void leftContainer.offsetWidth;
+      leftContainer.classList.add('animate-gesture');
+      rightContainer.classList.add('animate-gesture');
+
+      // Stroop Mode
+      const stage = document.getElementById('stageContainer');
+      const stroopBanner = document.getElementById('stroopBanner');
+
+      stage.classList.remove('stroop-green', 'stroop-red', 'stroop-blue');
+
+      if (exerciseMode === 'stroop') {
+        stage.classList.add('stroop-' + currentStroopColor);
+        if (currentStroopColor === 'green') {
+          stroopBanner.className = "w-full max-w-lg mb-4 py-2 px-4 rounded-xl text-xs font-bold text-center border border-emerald-500/50 bg-emerald-950/60 text-emerald-300";
+          stroopBanner.innerText = "🟢 YEŞİL: Gördüğün hareketi doğrudan yap!";
+        } else if (currentStroopColor === 'red') {
+          stroopBanner.className = "w-full max-w-lg mb-4 py-2 px-4 rounded-xl text-xs font-bold text-center border border-rose-500/50 bg-rose-950/60 text-rose-300";
+          stroopBanner.innerText = "🔴 KIRMIZI: ÇAPRAZ YAP! (Sol eli sağa, sağ eli sola yap)";
+        } else {
+          stroopBanner.className = "w-full max-w-lg mb-4 py-2 px-4 rounded-xl text-xs font-bold text-center border border-blue-500/50 bg-blue-950/60 text-blue-300";
+          stroopBanner.innerText = "🔵 MAVİ: DONDUR / SABİT KAL! (Hiçbir elini değiştirme)";
+        }
+      }
+    }
+
+    function renderTouchArea(area, dotCount, side) {
+      area.innerHTML = '';
+      if (side === 'left') { requiredTouchesLeft = dotCount; touchesCompletedLeft = 0; }
+      else { requiredTouchesRight = dotCount; touchesCompletedRight = 0; }
+
+      for (let i = 0; i < dotCount; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'touch-dot';
+        dot.innerHTML = `<i class="fa-solid fa-fingerprint text-white text-2xl"></i>`;
+        
+        dot.addEventListener('pointerdown', (e) => {
+          e.preventDefault();
+          if (!dot.classList.contains('active')) {
+            dot.classList.add('active');
+            if (side === 'left') touchesCompletedLeft++;
+            else touchesCompletedRight++;
+
+            // Auto advance on touch completion
+            checkTouchCompletion();
+          }
+        });
+
+        area.appendChild(dot);
+      }
+    }
+
+    function checkTouchCompletion() {
+      const leftComplete = requiredTouchesLeft === 0 || touchesCompletedLeft >= requiredTouchesLeft;
+      const rightComplete = requiredTouchesRight === 0 || touchesCompletedRight >= requiredTouchesRight;
+
+      if (leftComplete && rightComplete && isRunning) {
+        recordEvaluation(true);
+        setTimeout(nextStep, 150);
+      }
+    }
+
+    function openReportModal() {
+      const total = correctCount + wrongCount;
+      const accuracy = total > 0 ? Math.round((correctCount / total) * 100) : 100;
+      const avgReaction = reactionTimes.length > 0 
+        ? Math.round(reactionTimes.reduce((a, b) => a + b, 0) / reactionTimes.length) 
+        : 0;
+
+      document.getElementById('rptAccuracy').innerText = `${accuracy}%`;
+      document.getElementById('rptReaction').innerText = `${avgReaction} ms`;
+      document.getElementById('rptCounts').innerText = `${correctCount} / ${wrongCount}`;
+      document.getElementById('rptReps').innerText = repCount;
+
+      document.getElementById('reportModal').classList.remove('hidden');
+    }
+
+    function closeReportModal() {
+      document.getElementById('reportModal').classList.add('hidden');
+    }
+
+    function downloadCSVReport() {
+      const total = correctCount + wrongCount;
+      const accuracy = total > 0 ? Math.round((correctCount / total) * 100) : 100;
+      const avgReaction = reactionTimes.length > 0 
+        ? Math.round(reactionTimes.reduce((a, b) => a + b, 0) / reactionTimes.length) 
+        : 0;
+
+      const csvContent = "data:text/csv;charset=utf-8," 
+        + "Parametre,Deger\n"
+        + `Laboratuvar,SPPlab\n`
+        + `Yazilim,CortexMove\n`
+        + `Calisma Modulu,${activeModule}\n`
+        + `Zorluk Seviyesi,${currentDifficulty}\n`
+        + `Egzersiz Modu,${exerciseMode}\n`
+        + `Toplam Tekrar,${repCount}\n`
+        + `Dogru Sayisi,${correctCount}\n`
+        + `Hatali Sayisi,${wrongCount}\n`
+        + `Basari Orani (%),${accuracy}\n`
+        + `Ortalama Tepki Suresi (ms),${avgReaction}\n`;
+
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", `CortexMove_SPPlab_Rapor_${Date.now()}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => console.warn(err));
+      } else {
+        if (document.exitFullscreen) document.exitFullscreen();
+      }
     }
   </script>
 </body>
