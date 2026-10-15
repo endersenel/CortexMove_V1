@@ -1,789 +1,727 @@
 <!DOCTYPE html>
-<html lang="tr" class="dark">
+<html lang="tr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>NeuroSync - Gelişmiş Sağ-Sol Beyin & Nöromotor Egzersizi</title>
-  
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            neuro: {
-              50: '#f0f9ff',
-              500: '#06b6d4',
-              600: '#0891b2',
-              900: '#0f172a',
-              950: '#020617'
-            }
-          }
-        }
-      }
-    }
-  </script>
-
-  <!-- FontAwesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>NeuroSync - Sağ & Sol Beyin Egzersizi</title>
   <style>
-    body {
-      font-family: 'Plus Jakarta Sans', sans-serif;
+    :root {
+      --bg-color: #0f172a;
+      --card-bg: #1e293b;
+      --text-color: #f8fafc;
+      --accent-color: #38bdf8;
+      --danger-color: #ef4444;
+      --success-color: #22c55e;
+      --warning-color: #eab308;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      user-select: none;
+      -webkit-user-select: none;
       touch-action: manipulation;
-      -webkit-tap-highlight-color: transparent;
     }
-    .font-mono-custom {
-      font-family: 'JetBrains Mono', monospace;
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
     }
-    @keyframes pulse-ring {
-      0% { transform: scale(0.96); opacity: 0.8; }
-      50% { transform: scale(1.02); opacity: 1; }
-      100% { transform: scale(1); opacity: 1; }
+
+    /* Header & Control Panel */
+    header {
+      background-color: var(--card-bg);
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+      z-index: 10;
     }
-    .animate-gesture {
-      animation: pulse-ring 0.2s cubic-bezier(0, 0, 0.2, 1);
+
+    h1 {
+      font-size: 1.4rem;
+      color: var(--accent-color);
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
-    .stroop-green { border-color: #22c55e !important; background-color: rgba(34, 197, 94, 0.08) !important; }
-    .stroop-red { border-color: #ef4444 !important; background-color: rgba(239, 68, 68, 0.08) !important; }
-    .stroop-blue { border-color: #3b82f6 !important; background-color: rgba(59, 130, 246, 0.08) !important; }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    select, button {
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: 1px solid #334155;
+      background-color: #0f172a;
+      color: #fff;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    button.btn-primary {
+      background-color: var(--accent-color);
+      color: #0f172a;
+      font-weight: bold;
+      border: none;
+    }
+
+    button.btn-primary:hover {
+      background-color: #7dd3fc;
+    }
+
+    /* Info Bar */
+    .info-bar {
+      background-color: rgba(30, 41, 59, 0.8);
+      padding: 8px 20px;
+      display: flex;
+      justify-content: space-around;
+      font-size: 0.95rem;
+      border-bottom: 1px solid #334155;
+    }
+
+    .info-item span {
+      font-weight: bold;
+      color: var(--accent-color);
+    }
+
+    /* Main Display Area */
+    main {
+      flex: 1;
+      display: flex;
+      position: relative;
+    }
+
+    .side-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      transition: background-color 0.3s;
+      position: relative;
+    }
+
+    .side-panel.left {
+      border-right: 2px dashed #334155;
+    }
+
+    .hand-card {
+      background-color: var(--card-bg);
+      border-radius: 20px;
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+      border: 2px solid #334155;
+      width: 80%;
+      max-width: 320px;
+      text-align: center;
+    }
+
+    .hand-icon {
+      font-size: 6rem;
+      line-height: 1;
+      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+    }
+
+    .hand-label {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #94a3b8;
+    }
+
+    /* Dual-Task Display Center */
+    .dual-task-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: var(--card-bg);
+      border: 2px solid var(--accent-color);
+      border-radius: 50%;
+      width: 110px;
+      height: 110px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+      z-index: 5;
+    }
+
+    .dual-task-overlay .title {
+      font-size: 0.65rem;
+      color: #94a3b8;
+      text-transform: uppercase;
+    }
+
+    .dual-task-overlay .content {
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: #fff;
+    }
+
+    /* Touch Module Elements */
+    .touch-target-container {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      width: 100%;
+      height: 100%;
+    }
+
+    .touch-circle {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: white;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+      cursor: pointer;
+      transition: transform 0.1s;
+    }
+
+    .touch-circle:active, .touch-circle.active {
+      transform: scale(0.9);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+    }
+
+    /* Footer & Trainer Controls */
+    footer {
+      background-color: var(--card-bg);
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid #334155;
+    }
+
+    .trainer-buttons {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn-success {
+      background-color: var(--success-color);
+      color: white;
+      font-weight: bold;
+      border: none;
+      padding: 10px 20px;
+    }
+
+    .btn-danger {
+      background-color: var(--danger-color);
+      color: white;
+      font-weight: bold;
+      border: none;
+      padding: 10px 20px;
+    }
+
+    /* Modal / Results Report */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(5px);
+      z-index: 100;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: var(--card-bg);
+      padding: 30px;
+      border-radius: 16px;
+      max-width: 500px;
+      width: 90%;
+      border: 1px solid #334155;
+      text-align: center;
+    }
+
+    .modal-content h2 {
+      color: var(--accent-color);
+      margin-bottom: 15px;
+    }
+
+    .report-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin: 20px 0;
+      text-align: left;
+    }
+
+    .report-card {
+      background: #0f172a;
+      padding: 12px;
+      border-radius: 8px;
+    }
+
+    .report-card label {
+      font-size: 0.8rem;
+      color: #94a3b8;
+      display: block;
+    }
+
+    .report-card value {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #fff;
+    }
+
+    /* Instruction Box */
+    .instruction-banner {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.9);
+      padding: 6px 16px;
+      border-radius: 20px;
+      border: 1px solid var(--accent-color);
+      font-size: 0.85rem;
+      color: var(--accent-color);
+      z-index: 4;
+      pointer-events: none;
+    }
   </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between overflow-x-hidden selection:bg-cyan-500 selection:text-white">
+<body>
 
-  <!-- TOP NAVIGATION / APP HEADER -->
-  <header class="bg-slate-900/90 border-b border-slate-800 backdrop-blur-md sticky top-0 z-40 px-4 py-3">
-    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+  <!-- Header Section -->
+  <header>
+    <h1>🧠 NeuroSync</h1>
+    <div class="controls">
+      <select id="moduleSelect">
+        <option value="hand">1. El Hareketleri Modülü</option>
+        <option value="touch">2. Dokunmatik Renk & Hedef Modülü</option>
+      </select>
       
-      <!-- Brand & Title -->
-      <div class="flex items-center space-x-3">
-        <div class="bg-gradient-to-tr from-cyan-500 via-blue-600 to-indigo-600 p-2.5 rounded-2xl shadow-lg shadow-cyan-500/20">
-          <i class="fa-solid fa-brain text-white text-xl"></i>
-        </div>
-        <div>
-          <div class="flex items-center space-x-2">
-            <h1 class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-cyan-400 via-sky-300 to-indigo-400 bg-clip-text text-transparent">
-              NeuroSync
-            </h1>
-            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 uppercase tracking-wider">v2.5 Pro</span>
-          </div>
-          <p class="text-xs text-slate-400 hidden sm:block">Nöromotor Koordinasyon & Bilişsel Performans Platformu</p>
-        </div>
-      </div>
+      <select id="modeSelect">
+        <option value="standard">Normal Mod</option>
+        <option value="inverse">Çapraz / Zıt Mod</option>
+        <option value="stroop">Stroop (Renk Kurallı)</option>
+      </select>
 
-      <!-- Quick Control Badges -->
-      <div class="flex items-center space-x-2 sm:space-x-3">
-        
-        <!-- Live Accuracy Badge -->
-        <div class="bg-slate-900 px-3 py-1.5 rounded-xl border border-slate-800 flex items-center space-x-2">
-          <i class="fa-solid fa-bullseye text-emerald-400 text-xs"></i>
-          <span class="text-xs text-slate-400 font-medium">Doğruluk:</span>
-          <span id="badgeAccuracy" class="text-xs font-bold text-emerald-400 font-mono-custom">100%</span>
-        </div>
+      <select id="difficultySelect">
+        <option value="easy">Kolay (2 Hareket)</option>
+        <option value="medium" selected>Orta (4 Hareket)</option>
+        <option value="hard">Zor (6 Hareket)</option>
+        <option value="expert">Çok Zor (8 Hareket)</option>
+      </select>
 
-        <!-- Average Reaction Badge -->
-        <div class="bg-slate-900 px-3 py-1.5 rounded-xl border border-slate-800 flex items-center space-x-2">
-          <i class="fa-solid fa-stopwatch text-amber-400 text-xs"></i>
-          <span class="text-xs text-slate-400 font-medium">Ort. Tepki:</span>
-          <span id="badgeReaction" class="text-xs font-bold text-amber-400 font-mono-custom">0 ms</span>
-        </div>
-
-        <!-- Fullscreen Button -->
-        <button onclick="toggleFullscreen()" class="p-2 bg-slate-800 hover:bg-slate-700 rounded-xl border border-slate-700 text-slate-300 transition" title="Tam Ekran">
-          <i class="fa-solid fa-expand"></i>
-        </button>
-      </div>
-
+      <button id="startBtn" class="btn-primary">Başlat</button>
     </div>
   </header>
 
-  <!-- MAIN DASHBOARD CONTENT -->
-  <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 flex flex-col justify-between gap-6">
+  <!-- Info Bar -->
+  <div class="info-bar">
+    <div class="info-item">Süre: <span id="timerDisplay">00:00</span></div>
+    <div class="info-item">Adım: <span id="stepDisplay">0 / 10</span></div>
+    <div class="info-item">Son Tepki: <span id="reactionDisplay">0 ms</span></div>
+    <div class="info-item">Ort. Tepki: <span id="avgReactionDisplay">0 ms</span></div>
+  </div>
 
-    <!-- MODULE CONFIGURATION PANEL -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-slate-900/70 border border-slate-800/80 rounded-2xl p-4 shadow-xl backdrop-blur-sm">
-      
-      <!-- 1. Difficulty Level (Kolay, Orta, Zor, Çok Zor) -->
-      <div class="flex flex-col justify-between">
-        <label class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center">
-          <i class="fa-solid fa-layer-group text-cyan-400 mr-1.5"></i> Zorluk Seviyesi
-        </label>
-        <div class="grid grid-cols-4 gap-1 bg-slate-950 p-1 rounded-xl border border-slate-800">
-          <button id="btnEasy" onclick="setDifficulty('easy')" class="py-1.5 text-xs font-bold rounded-lg bg-cyan-600 text-white transition">Kolay</button>
-          <button id="btnMedium" onclick="setDifficulty('medium')" class="py-1.5 text-xs font-bold rounded-lg text-slate-400 hover:text-slate-200 transition">Orta</button>
-          <button id="btnHard" onclick="setDifficulty('hard')" class="py-1.5 text-xs font-bold rounded-lg text-slate-400 hover:text-slate-200 transition">Zor</button>
-          <button id="btnVeryHard" onclick="setDifficulty('veryhard')" class="py-1.5 text-xs font-bold rounded-lg text-slate-400 hover:text-slate-200 transition">Çok Zor</button>
-        </div>
+  <!-- Main Display Area -->
+  <main>
+    <div class="instruction-banner" id="instructionBanner">Egzersizi başlatmak için 'Başlat' butonuna basın.</div>
+    
+    <!-- Left Hand / Area -->
+    <div class="side-panel left" id="leftPanel">
+      <div class="hand-card" id="leftHandCard">
+        <div class="hand-icon" id="leftIcon">👈</div>
+        <div class="hand-label" id="leftLabel">SOL EL</div>
       </div>
-
-      <!-- 2. Exercise Mode (Standart, Çapraz, Stroop Renk) -->
-      <div class="flex flex-col justify-between">
-        <label class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center">
-          <i class="fa-solid fa-sliders text-indigo-400 mr-1.5"></i> Egzersiz Modu
-        </label>
-        <select id="modeSelect" onchange="setExerciseMode(this.value)" class="bg-slate-950 border border-slate-800 text-slate-200 text-xs font-semibold rounded-xl p-2.5 focus:ring-2 focus:ring-cyan-500 outline-none">
-          <option value="standard">🎯 Standart Mod (Doğrudan Eşleşme)</option>
-          <option value="cross">🔀 Çapraz / Zıt Mod (Ters El Kontrolü)</option>
-          <option value="stroop">🎨 Stroop Renk Modu (Kural Değişimi)</option>
-        </select>
-      </div>
-
-      <!-- 3. Dual Task & Metronome Controls -->
-      <div class="flex flex-col justify-between">
-        <label class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center">
-          <i class="fa-solid fa-brain text-purple-400 mr-1.5"></i> Bilişsel Çift Görev & Ritim
-        </label>
-        <div class="flex items-center justify-between gap-2">
-          <!-- Dual Task Toggle -->
-          <button id="btnDualTask" onclick="toggleDualTask()" class="flex-1 py-2 px-3 bg-slate-950 border border-slate-800 hover:border-slate-700 rounded-xl text-xs font-bold text-slate-400 flex items-center justify-center space-x-1.5 transition">
-            <i class="fa-solid fa-calculator text-purple-400"></i>
-            <span id="dualTaskLabel">Matematik: KAPALI</span>
-          </button>
-          <!-- Metronome Toggle -->
-          <button id="btnMetronome" onclick="toggleMetronome()" class="py-2 px-3 bg-slate-950 border border-slate-800 hover:border-slate-700 rounded-xl text-xs font-bold text-slate-400 flex items-center justify-center space-x-1.5 transition">
-            <i class="fa-solid fa-drum text-amber-400"></i>
-            <span id="metroLabel">Metronom</span>
-          </button>
-        </div>
-      </div>
-
+      <div class="touch-target-container" id="leftTouchContainer" style="display: none;"></div>
     </div>
 
-    <!-- MAIN DISPLAY AREA (NEUROMOTOR STAGE) -->
-    <div id="stageContainer" class="w-full flex-1 bg-slate-900/50 border-2 border-slate-800 rounded-3xl p-6 sm:p-8 flex flex-col justify-between items-center relative shadow-2xl transition-all duration-300 min-h-[380px]">
-      
-      <!-- STROOP MODE INSTRUCTION BANNER (Dynamic) -->
-      <div id="stroopBanner" class="w-full max-w-lg mb-4 py-2 px-4 rounded-xl text-xs font-bold text-center border hidden transition-all duration-200">
-        <!-- Text injected by JS -->
-      </div>
-
-      <!-- CARDS LAYOUT: LEFT HAND | COGNITIVE CENTER | RIGHT HAND -->
-      <div class="w-full max-w-5xl grid grid-cols-1 md:grid-cols-11 gap-4 items-center my-auto">
-        
-        <!-- LEFT HAND CARD (5 Cols) -->
-        <div id="leftCard" class="md:col-span-5 bg-slate-900 border-2 border-slate-800 rounded-3xl p-6 flex flex-col items-center justify-between shadow-2xl relative overflow-hidden transition-all duration-200 min-h-[260px]">
-          <div class="w-full flex justify-between items-center border-b border-slate-800 pb-3 mb-2">
-            <span class="text-xs font-black uppercase tracking-widest text-cyan-400 flex items-center">
-              <i class="fa-solid fa-hand-back-fist mr-2"></i> SOL EL
-            </span>
-            <span id="leftGestureName" class="text-xs font-bold text-slate-400 bg-slate-950 px-3 py-1 rounded-full border border-slate-800">Yumruk</span>
-          </div>
-
-          <div id="leftGestureContainer" class="my-4 text-8xl sm:text-9xl transition-transform duration-150 select-none drop-shadow-md">
-            ✊
-          </div>
-
-          <div class="w-full bg-slate-950 rounded-full h-2 overflow-hidden border border-slate-800">
-            <div id="leftProgressBar" class="bg-cyan-500 h-full w-0 transition-all duration-75"></div>
-          </div>
-        </div>
-
-        <!-- COGNITIVE DUAL TASK CENTER DISPLAY (1 Col on Desktop) -->
-        <div class="md:col-span-1 flex flex-col items-center justify-center my-2 md:my-0">
-          <div id="dualTaskBox" class="hidden w-full md:w-24 h-24 bg-purple-950/40 border-2 border-purple-500/40 rounded-2xl flex flex-col items-center justify-center p-2 text-center shadow-lg shadow-purple-500/10">
-            <span class="text-[10px] font-extrabold uppercase text-purple-400 tracking-wider">ZİHİN</span>
-            <span id="dualTaskQuestion" class="text-lg font-black text-white font-mono-custom my-1">8 + 5</span>
-            <span class="text-[9px] text-purple-300/70">Cevapla</span>
-          </div>
-          <div id="modeIconBadge" class="md:flex hidden w-10 h-10 rounded-full bg-slate-800 border border-slate-700 items-center justify-center text-slate-400 text-sm">
-            <i class="fa-solid fa-arrows-split-up-and-left"></i>
-          </div>
-        </div>
-
-        <!-- RIGHT HAND CARD (5 Cols) -->
-        <div id="rightCard" class="md:col-span-5 bg-slate-900 border-2 border-slate-800 rounded-3xl p-6 flex flex-col items-center justify-between shadow-2xl relative overflow-hidden transition-all duration-200 min-h-[260px]">
-          <div class="w-full flex justify-between items-center border-b border-slate-800 pb-3 mb-2">
-            <span class="text-xs font-black uppercase tracking-widest text-emerald-400 flex items-center">
-              SAĞ EL <i class="fa-solid fa-hand-back-fist ml-2"></i>
-            </span>
-            <span id="rightGestureName" class="text-xs font-bold text-slate-400 bg-slate-950 px-3 py-1 rounded-full border border-slate-800">Açık El</span>
-          </div>
-
-          <div id="rightGestureContainer" class="my-4 text-8xl sm:text-9xl transition-transform duration-150 select-none drop-shadow-md">
-            🖐️
-          </div>
-
-          <div class="w-full bg-slate-950 rounded-full h-2 overflow-hidden border border-slate-800">
-            <div id="rightProgressBar" class="bg-emerald-500 h-full w-0 transition-all duration-75"></div>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- TIMER & SPEED SETTINGS BAR -->
-      <div class="w-full max-w-3xl mt-6 flex flex-wrap items-center justify-between gap-4 bg-slate-950/80 px-4 py-3 rounded-2xl border border-slate-800">
-        
-        <!-- Speed Slider -->
-        <div class="flex items-center space-x-3 flex-1 min-w-[200px]">
-          <i class="fa-solid fa-gauge-high text-cyan-400 text-sm"></i>
-          <div class="flex-1">
-            <div class="flex justify-between text-xs text-slate-400 font-bold mb-1">
-              <span>Süre Tempo</span>
-              <span id="speedLabel" class="text-cyan-400 font-mono-custom">2.5 sn</span>
-            </div>
-            <input type="range" id="speedSlider" min="0.6" max="4.0" step="0.1" value="2.5" oninput="updateSpeedFromSlider(this.value)" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-500">
-          </div>
-        </div>
-
-        <!-- Session Stats Counters -->
-        <div class="flex items-center space-x-5 text-xs font-bold">
-          <div class="text-center">
-            <span class="text-slate-500 block uppercase text-[10px]">Tekrar</span>
-            <span id="counterRep" class="text-base text-white font-mono-custom">0</span>
-          </div>
-          <div class="h-6 w-px bg-slate-800"></div>
-          <div class="text-center">
-            <span class="text-slate-500 block uppercase text-[10px]">Toplam Süre</span>
-            <span id="counterTime" class="text-base text-cyan-400 font-mono-custom">00:00</span>
-          </div>
-        </div>
-
-      </div>
-
+    <!-- Dual Task Center Display -->
+    <div class="dual-task-overlay" id="dualTaskOverlay" style="display: none;">
+      <div class="title">BİLİŞSEL</div>
+      <div class="content" id="dualTaskContent">-</div>
     </div>
 
-    <!-- TRAINER & CONTROL PANEL (DOĞRU / HATALI / BAŞLAT) -->
-    <div class="grid grid-cols-1 sm:grid-cols-12 gap-3 w-full max-w-4xl mx-auto">
-      
-      <!-- Trainer Correct/Wrong Scoring Buttons (Tablet / Pedal friendly) -->
-      <button onclick="recordEvaluation(true)" class="sm:col-span-3 bg-emerald-950/40 hover:bg-emerald-900/60 border border-emerald-500/40 text-emerald-400 font-extrabold py-3.5 px-4 rounded-2xl transition active:scale-95 flex items-center justify-center space-x-2 shadow-lg">
-        <i class="fa-solid fa-circle-check text-lg"></i>
-        <span>DOĞRU (Sol Ok)</span>
-      </button>
-
-      <!-- Main Start / Pause Controls -->
-      <button id="btnStart" onclick="startExercise()" class="sm:col-span-4 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-black py-3.5 px-6 rounded-2xl shadow-lg shadow-cyan-500/20 active:scale-95 transition flex items-center justify-center text-lg space-x-2">
-        <i class="fa-solid fa-play"></i>
-        <span>BAŞLAT</span>
-      </button>
-
-      <button id="btnPause" onclick="pauseExercise()" class="hidden sm:col-span-4 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-3.5 px-6 rounded-2xl shadow-lg shadow-amber-500/20 active:scale-95 transition items-center justify-center text-lg space-x-2">
-        <i class="fa-solid fa-pause"></i>
-        <span>DURAKLAT</span>
-      </button>
-
-      <button onclick="recordEvaluation(false)" class="sm:col-span-3 bg-rose-950/40 hover:bg-rose-900/60 border border-rose-500/40 text-rose-400 font-extrabold py-3.5 px-4 rounded-2xl transition active:scale-95 flex items-center justify-center space-x-2 shadow-lg">
-        <i class="fa-solid fa-circle-xmark text-lg"></i>
-        <span>HATALI (Sağ Ok)</span>
-      </button>
-
-      <!-- Reset & Report Buttons -->
-      <div class="sm:col-span-2 flex space-x-2">
-        <button onclick="resetExercise()" class="flex-1 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 font-bold p-3.5 rounded-2xl active:scale-95 transition flex items-center justify-center" title="Sıfırla">
-          <i class="fa-solid fa-rotate-left"></i>
-        </button>
-        <button onclick="openReportModal()" class="flex-1 bg-indigo-950/60 hover:bg-indigo-900/80 border border-indigo-700/50 text-indigo-300 font-bold p-3.5 rounded-2xl active:scale-95 transition flex items-center justify-center" title="Raporu Gör">
-          <i class="fa-solid fa-chart-pie"></i>
-        </button>
+    <!-- Right Hand / Area -->
+    <div class="side-panel right" id="rightPanel">
+      <div class="hand-card" id="rightHandCard">
+        <div class="hand-icon" id="rightIcon">👉</div>
+        <div class="hand-label" id="rightLabel">SAĞ EL</div>
       </div>
-
+      <div class="touch-target-container" id="rightTouchContainer" style="display: none;"></div>
     </div>
-
   </main>
 
-  <!-- REPORT MODAL (Seans Sonu Analiz Paneli) -->
-  <div id="reportModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
-    <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-lg w-full p-6 shadow-2xl relative overflow-hidden">
+  <!-- Footer Controls for Trainer -->
+  <footer>
+    <div style="font-size: 0.85rem; color: #94a3b8;">
+      Kısayollar: [Boşluk] Sonraki | [A] Doğru (🟢) | [Z] Hatalı (🔴)
+    </div>
+    <div class="trainer-buttons">
+      <button class="btn-danger" id="wrongBtn">🔴 Hatalı (Z)</button>
+      <button class="btn-success" id="correctBtn">🟢 Doğru (A)</button>
+      <button id="nextBtn">Sonraki ➔</button>
+    </div>
+  </footer>
+
+  <!-- Results Modal -->
+  <div class="modal" id="resultsModal">
+    <div class="modal-content">
+      <h2>🎉 Seans Tamamlandı</h2>
+      <p style="color: #94a3b8;">Performans Analiz Raporu</p>
       
-      <!-- Modal Header -->
-      <div class="flex items-center justify-between border-b border-slate-800 pb-4 mb-4">
-        <div class="flex items-center space-x-3">
-          <div class="bg-indigo-500/20 p-2 rounded-xl text-indigo-400">
-            <i class="fa-solid fa-chart-column text-xl"></i>
-          </div>
-          <div>
-            <h3 class="text-lg font-bold text-white">Egzersiz Performans Raporu</h3>
-            <p class="text-xs text-slate-400">Seans Analizi & Bilişsel Skor</p>
-          </div>
+      <div class="report-grid">
+        <div class="report-card">
+          <label>Toplam Adım</label>
+          <value id="reportSteps">10</value>
         </div>
-        <button onclick="closeReportModal()" class="text-slate-400 hover:text-white p-2 text-lg">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-      </div>
-
-      <!-- Stats Grid -->
-      <div class="grid grid-cols-2 gap-3 mb-6">
-        <div class="bg-slate-950 p-3.5 rounded-2xl border border-slate-800/80">
-          <span class="text-[11px] text-slate-400 font-medium uppercase">Başarı Oranı</span>
-          <p id="rptAccuracy" class="text-2xl font-black text-emerald-400 font-mono-custom mt-1">100%</p>
+        <div class="report-card">
+          <label>Doğruluk Oranı</label>
+          <value id="reportAccuracy">%100</value>
         </div>
-        <div class="bg-slate-950 p-3.5 rounded-2xl border border-slate-800/80">
-          <span class="text-[11px] text-slate-400 font-medium uppercase">Ort. Tepki Süresi</span>
-          <p id="rptReaction" class="text-2xl font-black text-amber-400 font-mono-custom mt-1">0 ms</p>
+        <div class="report-card">
+          <label>Ort. Tepki Süresi</label>
+          <value id="reportAvgTime">0 ms</value>
         </div>
-        <div class="bg-slate-950 p-3.5 rounded-2xl border border-slate-800/80">
-          <span class="text-[11px] text-slate-400 font-medium uppercase">Doğru / Hata</span>
-          <p id="rptCounts" class="text-lg font-bold text-white font-mono-custom mt-1">0 / 0</p>
-        </div>
-        <div class="bg-slate-950 p-3.5 rounded-2xl border border-slate-800/80">
-          <span class="text-[11px] text-slate-400 font-medium uppercase">Toplam Tekrar</span>
-          <p id="rptReps" class="text-lg font-bold text-cyan-400 font-mono-custom mt-1">0</p>
+        <div class="report-card">
+          <label>En Hızlı Tepki</label>
+          <value id="reportBestTime">0 ms</value>
         </div>
       </div>
 
-      <!-- Actions -->
-      <div class="flex items-center space-x-3">
-        <button onclick="downloadCSVReport()" class="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-4 rounded-xl text-xs transition flex items-center justify-center space-x-2">
-          <i class="fa-solid fa-download"></i>
-          <span>Raporu İndir (CSV)</span>
-        </button>
-        <button onclick="closeReportModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-3 px-5 rounded-xl text-xs transition">
-          Kapat
-        </button>
+      <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
+        <button id="closeModalBtn" class="btn-primary">Tamam</button>
+        <button id="downloadReportBtn">Raporu İndir (CSV)</button>
       </div>
-
     </div>
   </div>
 
-  <!-- JAVASCRIPT LOGIC -->
   <script>
-    // --- GESTURE DATABASE (Requirement #3) ---
-    const GESTURES = {
-      fist: { emoji: '✊', name: 'Yumruk' },
-      open: { emoji: '🖐️', name: 'Açık El' },
-      peace: { emoji: '✌️', name: 'Zafer' },
-      thumb: { emoji: '👍', name: 'Başparmak' },
-      pinch: { emoji: '🤏', name: 'Çimdik' },
-      rock: { emoji: '🤟', name: 'Rock / Sevgi' },
-      pointLeft: { emoji: '👈', name: 'Sol İşaret' },
-      pointRight: { emoji: '👉', name: 'Sağ İşaret' }
-    };
-
-    // --- DIFFICULTY LEVELS CONFIG ---
-    const DIFFICULTY_CONFIG = {
-      easy: {
-        gestures: [GESTURES.fist, GESTURES.open],
-        defaultSpeed: 2.5
-      },
-      medium: {
-        gestures: [GESTURES.fist, GESTURES.open, GESTURES.peace, GESTURES.thumb],
-        defaultSpeed: 2.0
-      },
-      hard: {
-        gestures: [GESTURES.fist, GESTURES.open, GESTURES.peace, GESTURES.thumb, GESTURES.pinch, GESTURES.rock],
-        defaultSpeed: 1.5
-      },
-      veryhard: {
-        gestures: [GESTURES.fist, GESTURES.open, GESTURES.peace, GESTURES.thumb, GESTURES.pinch, GESTURES.rock, GESTURES.pointLeft, GESTURES.pointRight],
-        defaultSpeed: 1.0
-      }
-    };
-
-    // --- STATE VARIABLES ---
-    let currentDifficulty = 'easy';
-    let exerciseMode = 'standard'; // 'standard', 'cross', 'stroop'
-    let isDualTaskActive = false;
-    let isMetronomeActive = false;
-
+    // System State
     let isRunning = false;
-    let stepIntervalTime = 2500;
-    
-    let stepTimer = null;
-    let clockTimer = null;
-    let progressTimer = null;
-    let metronomeInterval = null;
-
-    let elapsedTime = 0;
-    let repCount = 0;
-
-    let currentLeftGesture = GESTURES.fist;
-    let currentRightGesture = GESTURES.open;
-
-    // Reaction & Evaluation Stats
+    let currentStep = 0;
+    const maxSteps = 10;
+    let timerInterval = null;
+    let startTime = 0;
     let stepStartTime = 0;
     let reactionTimes = [];
     let correctCount = 0;
     let wrongCount = 0;
+    
+    // Multi-touch target tracking
+    let requiredTouches = 0;
+    let currentTouches = 0;
 
-    // Stroop Mode State
-    let currentStroopColor = 'green'; // 'green' (normal), 'red' (cross), 'blue' (freeze)
+    // Movement Hand Libraries
+    const handMovements = {
+      easy: [
+        { icon: '✊', name: 'Yumruk' },
+        { icon: '🖐️', name: 'Açık El' }
+      ],
+      medium: [
+        { icon: '✊', name: 'Yumruk' },
+        { icon: '🖐️', name: 'Açık El' },
+        { icon: '✌️', name: 'Zafer' },
+        { icon: '👍', name: 'Başparmak' }
+      ],
+      hard: [
+        { icon: '✊', name: 'Yumruk' },
+        { icon: '🖐️', name: 'Açık El' },
+        { icon: '✌️', name: 'Zafer' },
+        { icon: '👍', name: 'Başparmak' },
+        { icon: '🤏', name: 'Çimdik' },
+        { icon: '🤟', name: 'Rock' }
+      ],
+      expert: [
+        { icon: '✊', name: 'Yumruk' },
+        { icon: '🖐️', name: 'Açık El' },
+        { icon: '✌️', name: 'Zafer' },
+        { icon: '👍', name: 'Başparmak' },
+        { icon: '🤏', name: 'Çimdik' },
+        { icon: '🤟', name: 'Rock' },
+        { icon: '👈', name: 'Sol İşaret' },
+        { icon: '👉', name: 'Sağ İşaret' }
+      ]
+    };
 
-    // Web Audio API Context
-    let audioCtx = null;
+    // Colors for Touch Module
+    const colors = [
+      { name: 'Mavi', hex: '#3b82f6' },
+      { name: 'Kırmızı', hex: '#ef4444' },
+      { name: 'Yeşil', hex: '#22c55e' },
+      { name: 'Sarı', hex: '#eab308' }
+    ];
 
-    // --- INITIALIZATION ---
-    window.addEventListener('DOMContentLoaded', () => {
-      setDifficulty('easy');
-      renderCurrentStep();
-      setupKeyboardControls();
+    // DOM Elements
+    const startBtn = document.getElementById('startBtn');
+    const moduleSelect = document.getElementById('moduleSelect');
+    const modeSelect = document.getElementById('modeSelect');
+    const difficultySelect = document.getElementById('difficultySelect');
+    const timerDisplay = document.getElementById('timerDisplay');
+    const stepDisplay = document.getElementById('stepDisplay');
+    const reactionDisplay = document.getElementById('reactionDisplay');
+    const avgReactionDisplay = document.getElementById('avgReactionDisplay');
+    
+    const leftHandCard = document.getElementById('leftHandCard');
+    const rightHandCard = document.getElementById('rightHandCard');
+    const leftTouchContainer = document.getElementById('leftTouchContainer');
+    const rightTouchContainer = document.getElementById('rightTouchContainer');
+    
+    const leftIcon = document.getElementById('leftIcon');
+    const rightIcon = document.getElementById('rightIcon');
+    const leftLabel = document.getElementById('leftLabel');
+    const rightLabel = document.getElementById('rightLabel');
+    
+    const dualTaskOverlay = document.getElementById('dualTaskOverlay');
+    const dualTaskContent = document.getElementById('dualTaskContent');
+    const instructionBanner = document.getElementById('instructionBanner');
+
+    const correctBtn = document.getElementById('correctBtn');
+    const wrongBtn = document.getElementById('wrongBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    
+    const resultsModal = document.getElementById('resultsModal');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+
+    // Event Listeners
+    startBtn.addEventListener('click', toggleGame);
+    nextBtn.addEventListener('click', nextStep);
+    correctBtn.addEventListener('click', () => recordResult(true));
+    wrongBtn.addEventListener('click', () => recordResult(false));
+    closeModalBtn.addEventListener('click', () => resultsModal.style.display = 'none');
+
+    // Keyboard Shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (!isRunning) return;
+      if (e.code === 'Space') nextStep();
+      if (e.key === 'a' || e.key === 'A') recordResult(true);
+      if (e.key === 'z' || e.key === 'Z') recordResult(false);
     });
 
-    // --- KEYBOARD & PEDAL CONTROLS ---
-    function setupKeyboardControls() {
-      document.addEventListener('keydown', (e) => {
-        if (e.code === 'Space') {
-          e.preventDefault();
-          if (isRunning) pauseExercise(); else startExercise();
-        } else if (e.code === 'ArrowLeft') {
-          recordEvaluation(true);
-        } else if (e.code === 'ArrowRight') {
-          recordEvaluation(false);
-        }
-      });
-    }
-
-    // --- SOUND ENGINE ---
-    function playBeep(freq = 600, duration = 0.08) {
-      try {
-        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        if (audioCtx.state === 'suspended') audioCtx.resume();
-        
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-        gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start();
-        osc.stop(audioCtx.currentTime + duration);
-      } catch (e) {
-        console.warn(e);
-      }
-    }
-
-    // --- DIFFICULTY CONTROL ---
-    function setDifficulty(level) {
-      currentDifficulty = level;
-
-      ['Easy', 'Medium', 'Hard', 'VeryHard'].forEach(lvl => {
-        const btn = document.getElementById('btn' + lvl);
-        if (lvl.toLowerCase() === level) {
-          btn.className = "py-1.5 text-xs font-bold rounded-lg bg-cyan-600 text-white transition";
-        } else {
-          btn.className = "py-1.5 text-xs font-bold rounded-lg text-slate-400 hover:text-slate-200 transition";
-        }
-      });
-
-      const config = DIFFICULTY_CONFIG[level];
-      updateSpeedFromSlider(config.defaultSpeed);
-
-      if (isRunning) restartTimers();
-    }
-
-    // --- EXERCISE MODE CONTROL ---
-    function setExerciseMode(mode) {
-      exerciseMode = mode;
-      const stroopBanner = document.getElementById('stroopBanner');
-
-      if (mode === 'stroop') {
-        stroopBanner.classList.remove('hidden');
+    function toggleGame() {
+      if (isRunning) {
+        stopGame();
       } else {
-        stroopBanner.classList.add('hidden');
-      }
-
-      renderCurrentStep();
-    }
-
-    // --- DUAL TASK TOGGLE ---
-    function toggleDualTask() {
-      isDualTaskActive = !isDualTaskActive;
-      const btn = document.getElementById('btnDualTask');
-      const box = document.getElementById('dualTaskBox');
-      const label = document.getElementById('dualTaskLabel');
-
-      if (isDualTaskActive) {
-        btn.className = "flex-1 py-2 px-3 bg-purple-950/80 border border-purple-500/50 rounded-xl text-xs font-bold text-purple-300 flex items-center justify-center space-x-1.5 transition";
-        label.innerText = "Matematik: AÇIK";
-        box.classList.remove('hidden');
-        generateMathQuestion();
-      } else {
-        btn.className = "flex-1 py-2 px-3 bg-slate-950 border border-slate-800 hover:border-slate-700 rounded-xl text-xs font-bold text-slate-400 flex items-center justify-center space-x-1.5 transition";
-        label.innerText = "Matematik: KAPALI";
-        box.classList.add('hidden');
+        startGame();
       }
     }
 
-    function generateMathQuestion() {
-      const a = Math.floor(Math.random() * 12) + 2;
-      const b = Math.floor(Math.random() * 12) + 1;
-      const ops = ['+', '-'];
-      const op = ops[Math.floor(Math.random() * ops.length)];
-      document.getElementById('dualTaskQuestion').innerText = `${a} ${op} ${b}`;
-    }
-
-    // --- METRONOME TOGGLE ---
-    function toggleMetronome() {
-      isMetronomeActive = !isMetronomeActive;
-      const btn = document.getElementById('btnMetronome');
-
-      if (isMetronomeActive) {
-        btn.className = "py-2 px-3 bg-amber-950/80 border border-amber-500/50 rounded-xl text-xs font-bold text-amber-300 flex items-center justify-center space-x-1.5 transition";
-        if (isRunning) startMetronome();
-      } else {
-        btn.className = "py-2 px-3 bg-slate-950 border border-slate-800 hover:border-slate-700 rounded-xl text-xs font-bold text-slate-400 flex items-center justify-center space-x-1.5 transition";
-        stopMetronome();
-      }
-    }
-
-    function startMetronome() {
-      stopMetronome();
-      metronomeInterval = setInterval(() => {
-        playBeep(900, 0.04);
-      }, stepIntervalTime / 2);
-    }
-
-    function stopMetronome() {
-      clearInterval(metronomeInterval);
-    }
-
-    // --- SPEED CONTROL ---
-    function updateSpeedFromSlider(val) {
-      const seconds = parseFloat(val);
-      stepIntervalTime = seconds * 1000;
-      document.getElementById('speedSlider').value = seconds;
-      document.getElementById('speedLabel').innerText = seconds.toFixed(1) + ' sn';
-
-      if (isRunning) restartTimers();
-    }
-
-    // --- EXERCISE CONTROLS ---
-    function startExercise() {
-      if (isRunning) return;
+    function startGame() {
       isRunning = true;
-
-      document.getElementById('btnStart').classList.add('hidden');
-      document.getElementById('btnPause').classList.remove('hidden');
-      document.getElementById('btnPause').classList.add('flex');
-
-      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
-      startTimers();
-      if (isMetronomeActive) startMetronome();
-      playBeep(800, 0.15);
-    }
-
-    function pauseExercise() {
-      if (!isRunning) return;
-      isRunning = false;
-
-      document.getElementById('btnPause').classList.add('hidden');
-      document.getElementById('btnPause').classList.remove('flex');
-      document.getElementById('btnStart').classList.remove('hidden');
-
-      stopTimers();
-      stopMetronome();
-    }
-
-    function resetExercise() {
-      pauseExercise();
-      elapsedTime = 0;
-      repCount = 0;
+      currentStep = 0;
+      reactionTimes = [];
       correctCount = 0;
       wrongCount = 0;
-      reactionTimes = [];
-
-      document.getElementById('counterTime').innerText = "00:00";
-      document.getElementById('counterRep').innerText = "0";
-      document.getElementById('badgeAccuracy').innerText = "100%";
-      document.getElementById('badgeReaction').innerText = "0 ms";
-
-      document.getElementById('leftProgressBar').style.width = '0%';
-      document.getElementById('rightProgressBar').style.width = '0%';
-
-      currentLeftGesture = GESTURES.fist;
-      currentRightGesture = GESTURES.open;
-      renderCurrentStep();
+      startBtn.textContent = 'Durdur';
+      startBtn.style.backgroundColor = 'var(--danger-color)';
+      
+      startTime = Date.now();
+      timerInterval = setInterval(updateTimer, 1000);
+      
+      nextStep();
     }
 
-    function startTimers() {
-      stopTimers();
-
-      clockTimer = setInterval(() => {
-        elapsedTime++;
-        const mins = Math.floor(elapsedTime / 60).toString().padStart(2, '0');
-        const secs = (elapsedTime % 60).toString().padStart(2, '0');
-        document.getElementById('counterTime').innerText = `${mins}:${secs}`;
-      }, 1000);
-
-      stepStartTime = Date.now();
-
-      progressTimer = setInterval(() => {
-        const elapsed = Date.now() - stepStartTime;
-        const pct = Math.min(100, (elapsed / stepIntervalTime) * 100);
-        document.getElementById('leftProgressBar').style.width = pct + '%';
-        document.getElementById('rightProgressBar').style.width = pct + '%';
-      }, 30);
-
-      stepTimer = setInterval(() => {
-        nextStep();
-      }, stepIntervalTime);
+    function stopGame() {
+      isRunning = false;
+      clearInterval(timerInterval);
+      startBtn.textContent = 'Başlat';
+      startBtn.style.backgroundColor = 'var(--accent-color)';
+      instructionBanner.textContent = "Egzersiz durduruldu.";
     }
 
-    function stopTimers() {
-      clearInterval(clockTimer);
-      clearInterval(stepTimer);
-      clearInterval(progressTimer);
+    function updateTimer() {
+      const elapsed = Math.floor((Date.now() - startTime) / 1000);
+      const mins = String(Math.floor(elapsed / 60)).padStart(2, '0');
+      const secs = String(elapsed % 60).padStart(2, '0');
+      timerDisplay.textContent = `${mins}:${secs}`;
     }
 
-    function restartTimers() {
-      if (isRunning) {
-        stopTimers();
-        startTimers();
-        if (isMetronomeActive) startMetronome();
-      }
-    }
-
-    // Move to next step
     function nextStep() {
-      // Log reaction time
-      const reaction = Date.now() - stepStartTime;
-      reactionTimes.push(reaction);
-      updateStatsBadges();
+      if (!isRunning) return;
 
+      // Record reaction time if coming from previous step
+      if (stepStartTime > 0) {
+        const reaction = Date.now() - stepStartTime;
+        reactionTimes.push(reaction);
+        reactionDisplay.textContent = `${reaction} ms`;
+        const avg = Math.round(reactionTimes.reduce((a, b) => a + b, 0) / reactionTimes.length);
+        avgReactionDisplay.textContent = `${avg} ms`;
+      }
+
+      currentStep++;
+      if (currentStep > maxSteps) {
+        finishSession();
+        return;
+      }
+
+      stepDisplay.textContent = `${currentStep} / ${maxSteps}`;
       stepStartTime = Date.now();
 
-      const pool = DIFFICULTY_CONFIG[currentDifficulty].gestures;
-      let newLeft, newRight;
+      const activeModule = moduleSelect.value;
+      const activeMode = modeSelect.value;
+      const activeDifficulty = difficultySelect.value;
 
-      do {
-        newLeft = pool[Math.floor(Math.random() * pool.length)];
-        newRight = pool[Math.floor(Math.random() * pool.length)];
-      } while (newLeft === currentLeftGesture && newRight === currentRightGesture);
+      // Reset panels
+      leftHandCard.style.display = 'none';
+      rightHandCard.style.display = 'none';
+      leftTouchContainer.style.display = 'none';
+      rightTouchContainer.style.display = 'none';
+      dualTaskOverlay.style.display = 'none';
 
-      currentLeftGesture = newLeft;
-      currentRightGesture = newRight;
-
-      // Random Stroop Color pick if mode active
-      if (exerciseMode === 'stroop') {
-        const colors = ['green', 'red', 'blue'];
-        currentStroopColor = colors[Math.floor(Math.random() * colors.length)];
-      }
-
-      if (isDualTaskActive) generateMathQuestion();
-
-      repCount++;
-      document.getElementById('counterRep').innerText = repCount;
-
-      renderCurrentStep();
-      playBeep(650, 0.06);
-    }
-
-    // --- EVALUATION / SCORING ---
-    function recordEvaluation(isCorrect) {
-      if (isCorrect) correctCount++; else wrongCount++;
-      updateStatsBadges();
-      playBeep(isCorrect ? 1000 : 300, 0.1);
-    }
-
-    function updateStatsBadges() {
-      const total = correctCount + wrongCount;
-      const accuracy = total > 0 ? Math.round((correctCount / total) * 100) : 100;
-      document.getElementById('badgeAccuracy').innerText = `${accuracy}%`;
-
-      const avgReaction = reactionTimes.length > 0 
-        ? Math.round(reactionTimes.reduce((a, b) => a + b, 0) / reactionTimes.length) 
-        : 0;
-      document.getElementById('badgeReaction').innerText = `${avgReaction} ms`;
-    }
-
-    // --- RENDER LOGIC ---
-    function renderCurrentStep() {
-      let displayLeft = currentLeftGesture;
-      let displayRight = currentRightGesture;
-
-      // Handle Inverse/Cross Control Mode
-      if (exerciseMode === 'cross') {
-        displayLeft = currentRightGesture;
-        displayRight = currentLeftGesture;
-      }
-
-      // Left Card Render
-      const leftContainer = document.getElementById('leftGestureContainer');
-      leftContainer.innerText = displayLeft.emoji;
-      document.getElementById('leftGestureName').innerText = displayLeft.name;
-
-      // Right Card Render
-      const rightContainer = document.getElementById('rightGestureContainer');
-      rightContainer.innerText = displayRight.emoji;
-      document.getElementById('rightGestureName').innerText = displayRight.name;
-
-      // Trigger Pulse Animation
-      leftContainer.classList.remove('animate-gesture');
-      rightContainer.classList.remove('animate-gesture');
-      void leftContainer.offsetWidth;
-      leftContainer.classList.add('animate-gesture');
-      rightContainer.classList.add('animate-gesture');
-
-      // Stroop Mode Styling
-      const stage = document.getElementById('stageContainer');
-      const stroopBanner = document.getElementById('stroopBanner');
-
-      stage.classList.remove('stroop-green', 'stroop-red', 'stroop-blue');
-
-      if (exerciseMode === 'stroop') {
-        stage.classList.add('stroop-' + currentStroopColor);
-        if (currentStroopColor === 'green') {
-          stroopBanner.className = "w-full max-w-lg mb-4 py-2 px-4 rounded-xl text-xs font-bold text-center border border-emerald-500/50 bg-emerald-950/60 text-emerald-300";
-          stroopBanner.innerText = "🟢 YEŞİL: Gördüğün hareketi doğrudan yap!";
-        } else if (currentStroopColor === 'red') {
-          stroopBanner.className = "w-full max-w-lg mb-4 py-2 px-4 rounded-xl text-xs font-bold text-center border border-rose-500/50 bg-rose-950/60 text-rose-300";
-          stroopBanner.innerText = "🔴 KIRMIZI: ÇAPRAZ YAP! (Sol eli sağa, sağ eli sola yap)";
-        } else {
-          stroopBanner.className = "w-full max-w-lg mb-4 py-2 px-4 rounded-xl text-xs font-bold text-center border border-blue-500/50 bg-blue-950/60 text-blue-300";
-          stroopBanner.innerText = "🔵 MAVİ: DONDUR / SABİT KAL! (Hiçbir elini değiştirme)";
-        }
-      }
-    }
-
-    // --- REPORT MODAL ---
-    function openReportModal() {
-      const total = correctCount + wrongCount;
-      const accuracy = total > 0 ? Math.round((correctCount / total) * 100) : 100;
-      const avgReaction = reactionTimes.length > 0 
-        ? Math.round(reactionTimes.reduce((a, b) => a + b, 0) / reactionTimes.length) 
-        : 0;
-
-      document.getElementById('rptAccuracy').innerText = `${accuracy}%`;
-      document.getElementById('rptReaction').innerText = `${avgReaction} ms`;
-      document.getElementById('rptCounts').innerText = `${correctCount} / ${wrongCount}`;
-      document.getElementById('rptReps').innerText = repCount;
-
-      document.getElementById('reportModal').classList.remove('hidden');
-    }
-
-    function closeReportModal() {
-      document.getElementById('reportModal').classList.add('hidden');
-    }
-
-    function downloadCSVReport() {
-      const total = correctCount + wrongCount;
-      const accuracy = total > 0 ? Math.round((correctCount / total) * 100) : 100;
-      const avgReaction = reactionTimes.length > 0 
-        ? Math.round(reactionTimes.reduce((a, b) => a + b, 0) / reactionTimes.length) 
-        : 0;
-
-      const csvContent = "data:text/csv;charset=utf-8," 
-        + "Parametre,Deger\n"
-        + `Zorluk Seviyesi,${currentDifficulty}\n`
-        + `Egzersiz Modu,${exerciseMode}\n`
-        + `Toplam Tekrar,${repCount}\n`
-        + `Dogru Sayisi,${correctCount}\n`
-        + `Hatali Sayisi,${wrongCount}\n`
-        + `Basari Orani (%),${accuracy}\n`
-        + `Ortalama Tepki Suresi (ms),${avgReaction}\n`;
-
-      const encodedUri = encodeURI(csvContent);
-      const link = document.createElement("a");
-      link.setAttribute("href", encodedUri);
-      link.setAttribute("download", `NeuroSync_Rapor_${Date.now()}.csv`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
-
-    // --- FULLSCREEN TOGGLE ---
-    function toggleFullscreen() {
-      if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen().catch(err => console.warn(err));
+      // Update instructions based on mode
+      if (activeMode === 'inverse') {
+        instructionBanner.textContent = '⚡ ÇAPRAZ MOD: Ekranda görülenin ZIDDINI uygulayın!';
+      } else if (activeMode === 'stroop') {
+        instructionBanner.textContent = '🎨 STROOP MODU: Renk kuralına dikkat edin!';
       } else {
-        if (document.exitFullscreen) document.exitFullscreen();
+        instructionBanner.textContent = '🎯 STANDART MOD: Ekranda görülen hareketleri birebir yapın.';
       }
+
+      // Dual Task Random Math Generation
+      if (Math.random() > 0.5) {
+        dualTaskOverlay.style.display = 'flex';
+        const num1 = Math.floor(Math.random() * 9) + 1;
+        const num2 = Math.floor(Math.random() * 9) + 1;
+        dualTaskContent.textContent = `${num1} + ${num2}`;
+      }
+
+      // Render Active Module
+      if (activeModule === 'hand') {
+        renderHandModule(activeDifficulty);
+      } else {
+        renderTouchModule(activeDifficulty);
+      }
+    }
+
+    // 1. Hand Exercise Module
+    function renderHandModule(difficulty) {
+      leftHandCard.style.display = 'flex';
+      rightHandCard.style.display = 'flex';
+
+      const pool = handMovements[difficulty];
+      const leftMove = pool[Math.floor(Math.random() * pool.length)];
+      const rightMove = pool[Math.floor(Math.random() * pool.length)];
+
+      leftIcon.textContent = leftMove.icon;
+      leftLabel.textContent = leftMove.name;
+      rightIcon.textContent = rightMove.icon;
+      rightLabel.textContent = rightMove.name;
+    }
+
+    // 2. Touch Color Target Module
+    function renderTouchModule(difficulty) {
+      leftTouchContainer.style.display = 'flex';
+      rightTouchContainer.style.display = 'flex';
+      
+      leftTouchContainer.innerHTML = '';
+      rightTouchContainer.innerHTML = '';
+
+      // Determine circle counts based on difficulty
+      let countLeft = 1;
+      let countRight = 1;
+      if (difficulty === 'medium') { countLeft = 1; countRight = 2; }
+      if (difficulty === 'hard') { countLeft = 2; countRight = 2; }
+      if (difficulty === 'expert') { countLeft = 2; countRight = 3; }
+
+      // Target selection vs Penalty Color
+      const targetColor = colors[Math.floor(Math.random() * colors.length)];
+      const forbiddenColor = colors.find(c => c.hex !== targetColor.hex);
+
+      instructionBanner.textContent = `👉 HEDEF: ${targetColor.name} dairelere basın! (${forbiddenColor.name} renge DOKUNMAYIN!)`;
+
+      requiredTouches = countLeft + countRight;
+      currentTouches = 0;
+
+      // Render Left Container Circles
+      for (let i = 0; i < countLeft; i++) {
+        createTouchCircle(leftTouchContainer, targetColor);
+      }
+
+      // Render Right Container Circles
+      for (let i = 0; i < countRight; i++) {
+        createTouchCircle(rightTouchContainer, targetColor);
+      }
+
+      // Add a decoy/forbidden color circle
+      if (difficulty === 'hard' || difficulty === 'expert') {
+        createTouchCircle(leftTouchContainer, forbiddenColor, true);
+      }
+    }
+
+    function createTouchCircle(container, colorObj, isForbidden = false) {
+      const circle = document.createElement('div');
+      circle.className = 'touch-circle';
+      circle.style.backgroundColor = colorObj.hex;
+      circle.textContent = isForbidden ? '❌' : '🎯';
+
+      circle.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        if (isForbidden) {
+          circle.style.transform = 'scale(1.2)';
+          recordResult(false);
+          alert('⚠️ Yasaklı renge dokunuldu!');
+        } else {
+          if (!circle.classList.contains('active')) {
+            circle.classList.add('active');
+            circle.style.opacity = '0.4';
+            currentTouches++;
+            
+            // Auto advance if all targets touched
+            if (currentTouches >= requiredTouches) {
+              recordResult(true);
+              setTimeout(nextStep, 200);
+            }
+          }
+        }
+      });
+
+      container.appendChild(circle);
+    }
+
+    function recordResult(isCorrect) {
+      if (isCorrect) correctCount++;
+      else wrongCount++;
+    }
+
+    function finishSession() {
+      stopGame();
+      
+      const totalSteps = maxSteps;
+      const accuracy = Math.round((correctCount / (correctCount + wrongCount || 1)) * 100);
+      const avgTime = Math.round(reactionTimes.reduce((a, b) => a + b, 0) / (reactionTimes.length || 1));
+      const bestTime = reactionTimes.length > 0 ? Math.min(...reactionTimes) : 0;
+
+      document.getElementById('reportSteps').textContent = totalSteps;
+      document.getElementById('reportAccuracy').textContent = `%${accuracy}`;
+      document.getElementById('reportAvgTime').textContent = `${avgTime} ms`;
+      document.getElementById('reportBestTime').textContent = `${bestTime} ms`;
+
+      resultsModal.style.display = 'flex';
     }
   </script>
 </body>
